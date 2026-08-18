@@ -1,0 +1,87 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "content/uploads"
+public_folder: "/content/uploads"
+
+locale: "es"
+
+collections:
+  - name: "site"
+    label: "Mi sitio"
+    files:
+      - file: "content/site.json"
+        label: "Contenido del sitio"
+        name: "site"
+        fields:
+          - label: "Perfil"
+            name: "profile"
+            widget: "object"
+            fields:
+              - { label: "Nombre", name: "name", widget: "string" }
+              - { label: "Etiqueta pequeña", name: "eyebrow", widget: "string" }
+              - { label: "Frase / tagline", name: "tagline", widget: "text" }
+              - { label: "Ubicación", name: "location", widget: "string" }
+              - { label: "Escritor desde (año)", name: "since", widget: "string" }
+              - { label: "Línea extra", name: "extra", widget: "string", required: false }
+              - { label: "Foto de perfil", name: "avatar", widget: "image", required: false }
+
+          - label: "Biografía"
+            name: "bio"
+            widget: "list"
+            label_singular: "Párrafo"
+            field: { label: "Texto", name: "text", widget: "text" }
+
+          - label: "Estadísticas"
+            name: "stats"
+            widget: "object"
+            fields:
+              - { label: "Obras", name: "obras", widget: "string" }
+              - { label: "Listas de lectura", name: "listas", widget: "string" }
+              - { label: "Seguidores", name: "seguidores", widget: "string" }
+
+          - label: "Obras publicadas"
+            name: "works"
+            widget: "list"
+            label_singular: "Obra"
+            summary: "{{title}}"
+            fields:
+              - { label: "Título", name: "title", widget: "string" }
+              - { label: "Estadísticas (texto libre)", name: "stats", widget: "string", required: false }
+              - { label: "Descripción", name: "desc", widget: "text" }
+              - { label: "Estado", name: "status", widget: "string", default: "Publicado" }
+              - { label: "Portada", name: "cover", widget: "image", required: false }
+
+          - label: "Lo que leo"
+            name: "reading"
+            widget: "list"
+            label_singular: "Libro"
+            summary: "{{title}}"
+            fields:
+              - { label: "Título", name: "title", widget: "string" }
+              - { label: "Autor", name: "author", widget: "string" }
+              - { label: "Estado", name: "status", widget: "select", options: ["Leyendo", "Leído", "Pendiente"] }
+              - { label: "Portada", name: "cover", widget: "image", required: false }
+
+          - label: "Lista de lectores"
+            name: "readers"
+            widget: "list"
+            label_singular: "Lector"
+            summary: "{{name}}"
+            fields:
+              - { label: "Nombre", name: "name", widget: "string" }
+              - { label: "Nota", name: "note", widget: "string", required: false }
+              - { label: "Foto", name: "avatar", widget: "image", required: false }
+
+          - label: "Bitácora"
+            name: "blog"
+            widget: "list"
+            label_singular: "Entrada"
+            summary: "{{title}}"
+            fields:
+              - { label: "Fecha", name: "date", widget: "string" }
+              - { label: "Título", name: "title", widget: "string" }
+              - { label: "Extracto", name: "excerpt", widget: "text" }
+
+          - { label: "Frase de cierre (pie de página)", name: "credo", widget: "string" }
