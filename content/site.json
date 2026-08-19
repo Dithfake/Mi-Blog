@@ -10,7 +10,8 @@
     "banner": "content/uploads/OIG1 (1).jpg"
   },
   "bio": [
-    "Soy un fervoroso cristiano, ávido lector, soy alguien que aspira a que mis historias lleguen a ser tan conocidas como las grandes obras de la fantasía contemporánea."
+    "Soy un fervoroso cristiano, ávido lector, soy alguien que aspira a que mis historias lleguen a ser tan conocidas como las grandes obras de la fantasía contemporánea.",
+    "No aspiro quizás a ser el sucesor de Tolkien, ni mucho menos llegar a la grandeza que varios han llegado antes. Pero quizás, ganarme un lugar en el nicho de la fantasía, poder ser conocido y que mis obras sean amadas como yo las he amado a ellas."
   ],
   "stats": {
     "obras": "02",
@@ -53,10 +54,46 @@
       "author": "Ramiro Pinilla",
       "status": "Leyendo",
       "cover": ""
+    },
+    {
+      "title": "The Ennead",
+      "author": "Jan Mark",
+      "status": "Leyendo",
+      "cover": ""
+    },
+    {
+      "title": "Describir el Escribir",
+      "author": "Daniel Cassany",
+      "status": "Leyendo",
+      "cover": ""
+    },
+    {
+      "title": "The Texas-Israeli War: 1999",
+      "author": "Jake Saunders and Howard Waldrop",
+      "status": "Leyendo",
+      "cover": ""
+    },
+    {
+      "title": "Lonesome Dove",
+      "author": "Larry McMurty",
+      "status": "Leyendo",
+      "cover": ""
+    },
+    {
+      "title": "Crónicas Literarias",
+      "author": "Ramón López Velarde",
+      "status": "Leyendo",
+      "cover": ""
     }
   ],
   "readers": [],
-  "blog": [],
+  "blog": [
+    {
+      "date": "",
+      "title": "Nuevo libro en mi colección",
+      "excerpt": "Me ha llegado un nuevo libro estos días, llamado \"El Cerro de las Campanas\". Es una novela histórica sobre una guerra en México, pero espero que me sirva para aprender a narrar algunas cosas más triviales dentro de una saga de novelas que aproximo hacer los próximos meses"
+    }
+  ],
   "credo": "Mi viaje aún continua",
   "maps": [
     {
@@ -64,5 +101,18 @@
       "image": "content/uploads/Mapa Eudapia compreso.png",
       "pins": []
     }
+  ],
+  "progress": [
+    {
+      "title": "Los Cantares del Emperador III",
+      "percent": 70,
+      "note": "Primer Borrador"
+    },
+    {
+      "title": "Nueva Saga",
+      "percent": 7,
+      "note": "Worldbulding"
+    }
   ]
+}
 }
