@@ -1,0 +1,123 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "content/uploads"
+public_folder: "/content/uploads"
+
+locale: "es"
+
+collections:
+  - name: "site"
+    label: "Mi sitio"
+    files:
+      - file: "content/site.json"
+        label: "Contenido del sitio"
+        name: "site"
+        fields:
+          - label: "Perfil"
+            name: "profile"
+            widget: "object"
+            fields:
+              - { label: "Nombre", name: "name", widget: "string" }
+              - { label: "Etiqueta pequeña", name: "eyebrow", widget: "string" }
+              - { label: "Frase / tagline", name: "tagline", widget: "text" }
+              - { label: "Ubicación", name: "location", widget: "string" }
+              - { label: "Escritor desde (año)", name: "since", widget: "string" }
+              - { label: "Línea extra", name: "extra", widget: "string", required: false }
+              - { label: "Foto de perfil", name: "avatar", widget: "image", required: false }
+              - { label: "Banner (imagen grande detrás de la foto)", name: "banner", widget: "image", required: false }
+
+          - label: "Biografía"
+            name: "bio"
+            widget: "list"
+            label_singular: "Párrafo"
+            field: { label: "Texto", name: "text", widget: "text" }
+
+          - label: "Estadísticas"
+            name: "stats"
+            widget: "object"
+            fields:
+              - { label: "Obras", name: "obras", widget: "string" }
+              - { label: "Listas de lectura", name: "listas", widget: "string" }
+              - { label: "Seguidores", name: "seguidores", widget: "string" }
+
+          - label: "Títulos de sección"
+            name: "sections"
+            widget: "object"
+            fields:
+              - { label: "Título — Obras", name: "obrasTitle", widget: "string" }
+              - { label: "Subtítulo — Obras", name: "obrasSubtitle", widget: "string" }
+              - { label: "Título — Lecturas", name: "lecturasTitle", widget: "string" }
+              - { label: "Subtítulo — Lecturas", name: "lecturasSubtitle", widget: "string" }
+              - { label: "Título — Lectores", name: "lectoresTitle", widget: "string" }
+              - { label: "Subtítulo — Lectores", name: "lectoresSubtitle", widget: "string" }
+              - { label: "Título — Notas (antes 'Bitácora')", name: "notasTitle", widget: "string" }
+              - { label: "Subtítulo — Notas", name: "notasSubtitle", widget: "string" }
+
+          - label: "Obras publicadas"
+            name: "works"
+            widget: "list"
+            label_singular: "Obra"
+            summary: "{{title}} — {{fields.date}}"
+            fields:
+              - { label: "Título", name: "title", widget: "string" }
+              - { label: "Fecha de publicación", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "DD/MM/YYYY", time_format: false }
+              - { label: "Estadísticas (texto libre)", name: "stats", widget: "string", required: false }
+              - { label: "Descripción", name: "desc", widget: "text" }
+              - { label: "Estado", name: "status", widget: "string", default: "Publicado" }
+              - { label: "Portada", name: "cover", widget: "image", required: false }
+              - { label: "Link para comprar (Amazon u otra tienda)", name: "buyLink", widget: "string", required: false }
+
+          - label: "Lo que leo"
+            name: "reading"
+            widget: "list"
+            label_singular: "Libro"
+            summary: "{{title}}"
+            fields:
+              - { label: "Título", name: "title", widget: "string" }
+              - { label: "Autor", name: "author", widget: "string" }
+              - { label: "Estado", name: "status", widget: "select", options: ["Leyendo", "Leído", "Pendiente"] }
+              - { label: "Portada", name: "cover", widget: "image", required: false }
+
+          - label: "Lista de lectores"
+            name: "readers"
+            widget: "list"
+            label_singular: "Lector"
+            summary: "{{name}}"
+            fields:
+              - { label: "Nombre", name: "name", widget: "string" }
+              - { label: "Nota", name: "note", widget: "string", required: false }
+              - { label: "Foto", name: "avatar", widget: "image", required: false }
+
+          - label: "Notas"
+            name: "blog"
+            widget: "list"
+            label_singular: "Entrada"
+            summary: "{{title}} — {{fields.date}}"
+            fields:
+              - { label: "Fecha", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "DD/MM/YYYY", time_format: false }
+              - { label: "Título", name: "title", widget: "string" }
+              - { label: "Extracto", name: "excerpt", widget: "text" }
+
+          - { label: "Frase de cierre (pie de página)", name: "credo", widget: "string" }
+
+          - label: "Mapas"
+            name: "maps"
+            widget: "list"
+            label_singular: "Mapa"
+            summary: "{{title}}"
+            hint: "Sube la imagen del mapa. Para cada ficha de lore, x/y son la posición del punto en porcentaje (0 = borde izquierdo/superior, 100 = borde derecho/inferior) — ábrela en un editor de imágenes para calcular dónde cae cada lugar."
+            fields:
+              - { label: "Nombre del mapa", name: "title", widget: "string" }
+              - { label: "Imagen del mapa", name: "image", widget: "image" }
+              - label: "Fichas de lore"
+                name: "pins"
+                widget: "list"
+                label_singular: "Ficha"
+                summary: "{{title}}"
+                fields:
+                  - { label: "Posición horizontal (0-100)", name: "x", widget: "number", value_type: "float" }
+                  - { label: "Posición vertical (0-100)", name: "y", widget: "number", value_type: "float" }
+                  - { label: "Nombre del lugar", name: "title", widget: "string" }
+                  - { label: "Descripción / lore", name: "desc", widget: "text" }
