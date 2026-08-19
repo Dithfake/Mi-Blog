@@ -1,32 +1,53 @@
 {
   "profile": {
     "name": "Christopher Soule",
-    "tagline": "Soy un escritor de polvo y anales olvidados por el pasar de los siglos",
+    "eyebrow": "Autor de Fantasía",
+    "tagline": "«Soy un escritor de polvo de estrellas; de historias antiguas y olvidadas por el pasar de los siglos.»",
     "location": "México",
     "since": "2021",
-    "avatar": "/content/uploads/j-r-r-tolkien-mizael-canato.jpg",
-    "eyebrow": "Autor de fantasía"
+    "extra": "Amigo de las piedras",
+    "avatar": "",
+    "banner": ""
+  },
+  "bio": [
+    "Soy un fervoroso cristiano, ávido lector, soy alguien que aspira a que mis historias lleguen a ser tan conocidas como las grandes obras de la fantasía contemporánea."
+  ],
+  "stats": {
+    "obras": "02",
+    "listas": "09",
+    "seguidores": "0"
+  },
+  "sections": {
+    "obrasTitle": "Obras publicadas",
+    "obrasSubtitle": "Relatos y crónicas de diversos mundos",
+    "lecturasTitle": "Lecturas actuales",
+    "lecturasSubtitle": "Libros que estoy leyendo, terminé o tengo pendientes.",
+    "lectoresTitle": "Lista de lectores",
+    "lectoresSubtitle": "Algunas de las personas que me siguen",
+    "notasTitle": "Notas",
+    "notasSubtitle": "Apuntes sobre el oficio de escribir y la investigación detrás de Urland."
   },
   "works": [
     {
+      "title": "Los Cantares del Emperador La Destrucción de la Imparable",
+      "date": "2026-02-10",
+      "stats": "",
+      "desc": "En alguna parte del vasto mar del Orbam ha caído la que por durante años se creía La Imparable.\n\nEl emperador, que una vez mantuvo la paz en el mundo, ahora yace muerto. Una gran guerra se avecina.\n\nAjmeeq, quien no duda en aprovecharse de la situación, lidera un ejército tan grande que por donde sea que camina el pasto no vuelve a crecer.\n\nAremio, heredero al trono, deberá verse obligado a aceptar su destino como próximo máximo líder de todo un imperio. Pero el destino del mundo se ve asechado por una amenaza desconocida que azota con terminar la paz y el orden que alguna vez construyó el mundo.\n\nSolo Rom, el Cuervo, puede guiar al siguiente emperador y ser el hombre que desvelará la oscuridad que cerca al Orbam.",
       "status": "Publicado",
-      "title": "Los Cantares del Emperador: La Destrucción de la Imparable",
-      "cover": "/content/uploads/image-1-.png",
-      "desc": "En alguna parte del vasto mar del Orbam ha caído la que por durante años se creía La Imparable.\n\nEl emperador, que una vez mantuvo la paz en el mundo, ahora yace muerto. Una gran guerra se avecina.\n\nAjmeeq, quien no duda en aprovecharse de la situación, lidera un ejército tan grande que por donde sea que camina el pasto no vuelve a crecer.\n\nAremio, heredero al trono, deberá verse obligado a aceptar su destino como próximo máximo líder de todo un imperio. Pero el destino del mundo se ve asechado por una amenaza desconocida que azota con terminar la paz y el orden que alguna vez construyó el mundo.\n\nSolo Rom, el Cuervo, puede guiar al siguiente emperador y ser el hombre que desvelará la oscuridad que cerca al Orbam."
+      "cover": "",
+      "buyLink": "https://www.amazon.com/dp/B0H21SKWX6"
     }
   ],
   "reading": [
     {
       "title": "Las Ciegas Hormigas",
       "author": "Ramiro Pinilla",
-      "status": "Leyendo"
+      "status": "Leyendo",
+      "cover": ""
     }
   ],
+  "readers": [],
   "blog": [],
-  "stats": {
-    "obras": "2",
-    "listas": "9",
-    "seguidores": "0"
-  },
-  "credo": "Mi viaje aún continua"
+  "credo": "Mi viaje aún continua",
+  "maps": []
 }
