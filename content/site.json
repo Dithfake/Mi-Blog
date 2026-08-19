@@ -34,11 +34,11 @@
       "stats": "",
       "desc": "En alguna parte del vasto mar del Orbam ha caído la que por durante años se creía La Imparable.\n\nEl emperador, que una vez mantuvo la paz en el mundo, ahora yace muerto. Una gran guerra se avecina.\n\nAjmeeq, quien no duda en aprovecharse de la situación, lidera un ejército tan grande que por donde sea que camina el pasto no vuelve a crecer.\n\nAremio, heredero al trono, deberá verse obligado a aceptar su destino como próximo máximo líder de todo un imperio. Pero el destino del mundo se ve asechado por una amenaza desconocida que azota con terminar la paz y el orden que alguna vez construyó el mundo.\n\nSolo Rom, el Cuervo, puede guiar al siguiente emperador y ser el hombre que desvelará la oscuridad que cerca al Orbam.",
       "status": "Publicado",
-      "cover": "content/uploads/image-1-.png",
+      "cover": "content/uploads/image-1.png",
       "buyLink": "https://www.amazon.com/dp/B0H21SKWX6"
     },
     {
-      "title": "Los Cantares del Emperador: ",
+      "title": "Los Cantares del Emperador Abscóndito Enemigo",
       "date": "2026-08-03",
       "stats": "",
       "desc": "Aremio ha vuelto al trono imperial. Ahora carga en sus hombros el peso de su imperio, sin saber lo que le depararía más adelante. La reunión entre los doce reinos comenzará; el destino del Orbam se decidirá en el palacio de Otrora, donde los emperadores y reyes de antaño convivieron en hermandad y fraternidad, pero el odio asecha y amenaza hacer estallar una guerra interna en el viejo continente. Más allá, en el Nuevo mundo, los enemigos de Eudoracum se alzaron para llevarles la guerra por riñas del pasado, amenazando con acabar con la vida de todos los eudarios que habitan en sus tierras. \nEl esar está contra las cuerdas, esperando refuerzos, ayuda de parte del viejo mundo. Sin saber que un enemigo oculto asecha entre las sombras, distinto a cualquier hombre o criatura conocida en el Orbam. \nEl Cuero tiene que dar la pista y encontrar el origen de la perturbación en el mundo, y para ello viajará más allá de Arinor, de las tierras malditas, para desvelar el secreto que un poderoso enemigo está ocultado frente a todos.",
@@ -64,5 +64,5 @@
       "image": "content/uploads/Mapa Eudapia compreso.png",
       "pins": []
     }
-  ],
+  ]
 }
