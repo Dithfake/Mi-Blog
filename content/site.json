@@ -34,7 +34,7 @@
       "stats": "",
       "desc": "En alguna parte del vasto mar del Orbam ha caído la que por durante años se creía La Imparable.\n\nEl emperador, que una vez mantuvo la paz en el mundo, ahora yace muerto. Una gran guerra se avecina.\n\nAjmeeq, quien no duda en aprovecharse de la situación, lidera un ejército tan grande que por donde sea que camina el pasto no vuelve a crecer.\n\nAremio, heredero al trono, deberá verse obligado a aceptar su destino como próximo máximo líder de todo un imperio. Pero el destino del mundo se ve asechado por una amenaza desconocida que azota con terminar la paz y el orden que alguna vez construyó el mundo.\n\nSolo Rom, el Cuervo, puede guiar al siguiente emperador y ser el hombre que desvelará la oscuridad que cerca al Orbam.",
       "status": "Publicado",
-      "cover": "content/uploads/image-1.png",
+      "cover": "content/uploads/image-1-.png",
       "buyLink": "https://www.amazon.com/dp/B0H21SKWX6"
     },
     {
@@ -58,5 +58,11 @@
   "readers": [],
   "blog": [],
   "credo": "Mi viaje aún continua",
-  "maps": ["content/uploads/Mapa Eudapia compreso.png"]
+  "maps": [
+    {
+      "title": "Eudapia",
+      "image": "content/uploads/Mapa Eudapia compreso.png",
+      "pins": []
+    }
+  ],
 }
