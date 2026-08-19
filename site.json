@@ -1,115 +1,53 @@
 {
   "profile": {
-    "name": "Sándor Zsigmond",
-    "eyebrow": "Urland · Crónicas y mitología",
-    "tagline": "«Soy un escritor de polvo y anales olvidados por el pasar de los siglos.»",
+    "name": "Christopher Soule",
+    "eyebrow": "Autor de Fantasía",
+    "tagline": "«Soy un escritor de polvo de estrellas; de historias antiguas y olvidadas por el pasar de los siglos.»",
     "location": "México",
-    "since": "2018",
-    "extra": "Fervoroso cristiano · Amigo de las piedras",
+    "since": "2021",
+    "extra": "Amigo de las piedras",
     "avatar": "",
     "banner": ""
   },
   "bio": [
-    "Soy un escritor de polvo y anales olvidados por el pasar de los siglos; fervoroso cristiano, ávido lector, soy alguien que aspira a que mis historias lleguen a ser tan conocidas como las grandes obras de la fantasía contemporánea.",
-    "Escribo desde México sobre reinos que se levantan y caen, sobre la fe puesta a prueba entre ceniza y piedra, y sobre los pequeños anales que el tiempo suele olvidar."
+    "Soy un fervoroso cristiano, ávido lector, soy alguien que aspira a que mis historias lleguen a ser tan conocidas como las grandes obras de la fantasía contemporánea."
   ],
   "stats": {
     "obras": "02",
-    "listas": "01",
-    "seguidores": "43"
+    "listas": "09",
+    "seguidores": "0"
   },
   "sections": {
     "obrasTitle": "Obras publicadas",
-    "obrasSubtitle": "Relatos y crónicas del mundo de Urland.",
+    "obrasSubtitle": "Relatos y crónicas de diversos mundos",
     "lecturasTitle": "Lecturas actuales",
     "lecturasSubtitle": "Libros que estoy leyendo, terminé o tengo pendientes.",
     "lectoresTitle": "Lista de lectores",
-    "lectoresSubtitle": "Algunas de las personas que acompañan las crónicas de Urland.",
+    "lectoresSubtitle": "Algunas de las personas que me siguen",
     "notasTitle": "Notas",
     "notasSubtitle": "Apuntes sobre el oficio de escribir y la investigación detrás de Urland."
   },
   "works": [
     {
-      "title": "Historias, Tragedias y Comedias de Urland",
-      "date": "2024-03-10",
-      "stats": "98 lecturas · 12 valoraciones · 6 listas",
-      "desc": "Urland es un mundo donde tres grandes extensiones de tierra dividen al mundo: desde las frías tierras de Alamand, hasta Sandaria y sus extensas llanuras despobladas.",
+      "title": "Los Cantares del Emperador La Destrucción de la Imparable",
+      "date": "2026-02-10",
+      "stats": "",
+      "desc": "En alguna parte del vasto mar del Orbam ha caído la que por durante años se creía La Imparable.\n\nEl emperador, que una vez mantuvo la paz en el mundo, ahora yace muerto. Una gran guerra se avecina.\n\nAjmeeq, quien no duda en aprovecharse de la situación, lidera un ejército tan grande que por donde sea que camina el pasto no vuelve a crecer.\n\nAremio, heredero al trono, deberá verse obligado a aceptar su destino como próximo máximo líder de todo un imperio. Pero el destino del mundo se ve asechado por una amenaza desconocida que azota con terminar la paz y el orden que alguna vez construyó el mundo.\n\nSolo Rom, el Cuervo, puede guiar al siguiente emperador y ser el hombre que desvelará la oscuridad que cerca al Orbam.",
       "status": "Publicado",
       "cover": "",
-      "buyLink": ""
-    },
-    {
-      "title": "Las Puertas del Hades",
-      "date": "2025-11-02",
-      "stats": "796 lecturas · 76 valoraciones · 20 listas",
-      "desc": "En un vasto imperio donde la paz se mantiene bajo el yugo de la Reina de Cenizas, un antiguo mal comienza a remover las puertas que separan el mundo de los vivos del reino de los muertos.",
-      "status": "Publicado",
-      "cover": "",
-      "buyLink": ""
+      "buyLink": "https://www.amazon.com/dp/B0H21SKWX6"
     }
   ],
   "reading": [
     {
-      "title": "El nombre del viento",
-      "author": "Patrick Rothfuss",
+      "title": "Las Ciegas Hormigas",
+      "author": "Ramiro Pinilla",
       "status": "Leyendo",
       "cover": ""
-    },
-    {
-      "title": "El Silmarillion",
-      "author": "J. R. R. Tolkien",
-      "status": "Leído",
-      "cover": ""
     }
   ],
-  "readers": [
-    {
-      "name": "Elena R.",
-      "note": "desde el cap. 1",
-      "avatar": ""
-    },
-    {
-      "name": "Marco T.",
-      "note": "fan de Alamand",
-      "avatar": ""
-    }
-  ],
-  "blog": [
-    {
-      "date": "2026-08-14",
-      "title": "Por qué escribo sobre reinos que se derrumban",
-      "excerpt": "Un reino que cae siempre tiene más que contar que uno que solo florece. Notas sobre por qué Urland nació de la ruina antes que de la gloria."
-    },
-    {
-      "date": "2026-07-02",
-      "title": "Alamand bajo la escarcha: notas de investigación",
-      "excerpt": "Cómo construí el clima, la geografía y las costumbres de las tierras frías de Alamand a partir de crónicas medievales reales."
-    },
-    {
-      "date": "2026-05-19",
-      "title": "Fe y fantasía: no son enemigas",
-      "excerpt": "Escribir como cristiano dentro de un género lleno de dioses inventados y reinos oscuros no es una contradicción."
-    }
-  ],
-  "credo": "Amigo de las piedras. Aprendiz de las grandes tragedias.",
-  "maps": [
-    {
-      "title": "Urland",
-      "image": "",
-      "pins": [
-        {
-          "x": 30,
-          "y": 40,
-          "title": "Alamand",
-          "desc": "Tierras frías del norte, cubiertas de escarcha casi todo el año."
-        },
-        {
-          "x": 65,
-          "y": 60,
-          "title": "Sandaria",
-          "desc": "Extensas llanuras despobladas al sur, escenario de Las Puertas del Hades."
-        }
-      ]
-    }
-  ]
+  "readers": [],
+  "blog": [],
+  "credo": "Mi viaje aún continua",
+  "maps": []
 }
