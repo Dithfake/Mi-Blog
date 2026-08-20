@@ -113,5 +113,19 @@
       "percent": 7,
       "note": "Worldbulding"
     }
+  ],
+  "sagas": [
+    {
+      "title": "Los Cantares Del Emperador",
+      "desc": "Todos los mapas del Orbam",
+      "maps": [
+        {
+          "title": "Eudapia",
+          "image": "content/uploads/Mapa Eudapia compreso.png",
+          "pins": []
+        }
+      ]
+    }
   ]
+}
 }
