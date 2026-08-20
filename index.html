@@ -231,7 +231,7 @@
 <nav id="nav">
   <a class="brand" href="#top">
     <div class="sigil" id="navAvatar"><span>SZ</span></div>
-    <span class="brand-name" id="navName">Sándor Zsigmond</span>
+    <span class="brand-name" id="navName">Christopher Soule</span>
   </a>
   <ul class="navlinks">
     <li><a href="#sobre-mi">Sobre mí</a></li>
@@ -247,8 +247,8 @@
 <header class="hero" id="top">
   <div class="banner-veil"></div>
   <div class="hero-sigil sigil lg" id="heroAvatar" style="margin-left:auto;margin-right:auto;"><span>SZ</span></div>
-  <p class="eyebrow" id="heroEyebrow">Urland · Crónicas y mitología</p>
-  <h1 id="heroName">Sándor Zsigmond</h1>
+  <p class="eyebrow" id="heroEyebrow">Mundos de fantasía</p>
+  <h1 id="heroName">Christopher Soule</h1>
   <p class="tagline" id="heroTagline">«Soy un escritor de polvo y anales olvidados por el pasar de los siglos.»</p>
   <div class="meta" id="heroMeta"></div>
   <div class="follow-wrap" id="followWrap">
@@ -292,7 +292,7 @@
     <div class="section-head reveal">
       <p class="eyebrow">Los anales</p>
       <h2 id="obrasTitle">Obras publicadas</h2>
-      <p id="obrasSubtitle">Relatos y crónicas del mundo de Urland.</p>
+      <p id="obrasSubtitle">Relatos y mundos.</p>
     </div>
     <div class="works" id="worksGrid"></div>
   </div>
@@ -303,7 +303,7 @@
     <div class="section-head reveal">
       <p class="eyebrow">Estante personal</p>
       <h2 id="lecturasTitle">Lecturas actuales</h2>
-      <p id="lecturasSubtitle">Libros que estoy leyendo, terminé o tengo pendientes.</p>
+      <p id="lecturasSubtitle">Libros que estoy leyendo.</p>
     </div>
     <div class="grid-cards" id="readingGrid"></div>
   </div>
@@ -314,7 +314,7 @@
     <div class="section-head reveal">
       <p class="eyebrow">Gracias por leerme</p>
       <h2 id="lectoresTitle">Lista de lectores</h2>
-      <p id="lectoresSubtitle">Algunas de las personas que acompañan las crónicas de Urland.</p>
+      <p id="lectoresSubtitle"></p>
     </div>
     <div class="readers-grid" id="readersGrid"></div>
   </div>
@@ -345,7 +345,7 @@
     <div class="section-head reveal">
       <p class="eyebrow">Notas del escritorio</p>
       <h2 id="notasTitle">Notas</h2>
-      <p id="notasSubtitle">Apuntes sobre el oficio de escribir y la investigación detrás de Urland.</p>
+      <p id="notasSubtitle">Apuntes sobre las cosas nuevas que adquiero.</p>
     </div>
     <div class="entries" id="entriesList"></div>
 
@@ -376,7 +376,7 @@
   <div class="wrap">
     <div class="contact-box reveal">
       <p class="eyebrow">Sígueme</p>
-      <h2 style="margin-top:10px;">Quédate por las tierras de Urland</h2>
+      <h2 style="margin-top:10px;">Quédate a leer más obras</h2>
       <p style="color:var(--ink-dim); margin-top:14px;">Recibe un correo cada vez que publique una nota nueva.</p>
 
       <!-- Reemplaza Christopher_Soule por tu nombre de usuario de Buttondown una vez que crees tu cuenta -->
@@ -399,20 +399,20 @@
 
 <footer>
   <div class="sigil" id="footAvatar" style="margin:0 auto;"><span>SZ</span></div>
-  <p class="credo" id="footCredo">Amigo de las piedras. Aprendiz de las grandes tragedias.</p>
-  <p style="font-family:'Inter',sans-serif; font-size:12px; letter-spacing:.06em; color:var(--muted); margin-top:22px;">© 2026 Sándor Zsigmond · Crónicas de Urland</p>
+  <p class="credo" id="footCredo">Mi viaje aún continua.</p>
+  <p style="font-family:'Inter',sans-serif; font-size:12px; letter-spacing:.06em; color:var(--muted); margin-top:22px;">© 2026 Christopher Soule</p>
   <a class="admin-link" href="/admin/">Editar sitio</a>
 </footer>
 
 <script>
 const DEFAULT_STATE = {
-  profile:{ name:"Sándor Zsigmond", eyebrow:"Urland · Crónicas y mitología",
-    tagline:"«Soy un escritor de polvo y anales olvidados por el pasar de los siglos.»",
-    location:"México", since:"2018", extra:"Fervoroso cristiano · Amigo de las piedras", avatar:"" },
-  bio:["Soy un escritor de polvo y anales olvidados por el pasar de los siglos."],
-  stats:{ obras:"02", listas:"01", seguidores:"43" },
+  profile:{ name:"Christopher Soule", eyebrow:"Crónicas de Mundos Olvidados",
+    tagline:"«Soy un escritor de polvo y mundos muertos»",
+    location:"México", since:"2021", extra:"Fervoroso cristiano · Amigo de las piedras", avatar:"" },
+  bio:["Soy un fervoroso cristiano, aspirante a llegar a ganarme algún día un nicho en la escritura de fantasía y que, quizás, algún día las personas puedan amar mis obras como yo las amo"],
+  stats:{ obras:"02", listas:"01", seguidores:"0" },
   works:[], reading:[], readers:[], blog:[],
-  credo:"Amigo de las piedras. Aprendiz de las grandes tragedias."
+  credo:"Mi viaje aún continúa."
 };
 let state = DEFAULT_STATE;
 
@@ -661,6 +661,19 @@ if(!prefersReduced){
 }
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', ()=> nav.classList.toggle('scrolled', window.scrollY>40), {passive:true});
+
+/* Hace visibles (con un fundido suave) los bloques marcados con la clase
+   "reveal" — bio, ficha de estadísticas y encabezados de cada sección.
+   Sin este observador, esos bloques se quedan con opacidad 0 para siempre. */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 /* ---------------- "Seguir por correo" ----------------
    El conteo mostrado es el número REAL de suscriptores de Buttondown,
