@@ -216,6 +216,12 @@
   .reveal{ opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease; }
   .reveal.in{ opacity:1; transform:none; }
   .hidden-block{ display:none; }
+  .support-btn{ display:inline-flex; align-items:center; gap:10px; margin-top:28px;
+  background:linear-gradient(135deg, var(--ember), var(--ember-2)); color:var(--ink);
+  border:1px solid var(--gold-soft); border-radius:999px; padding:12px 24px;
+  font-family:'Inter',sans-serif; font-size:14px; letter-spacing:.03em; text-decoration:none; box-shadow:var(--shadow); transition:.2s; }
+  .support-btn:hover{ transform:translateY(-1px); border-color:var(--gold); }
+  .support-btn svg{ width:20px; height:20px; }
 
   @media (max-width:860px){ .bio-grid, .works{ grid-template-columns:1fr; } .navlinks{ display:none; } }
   @media (max-width:560px){
@@ -223,6 +229,18 @@
     .tome{ grid-template-columns:1fr; } .cover{ height:190px; } .entry{ grid-template-columns:1fr; gap:8px; }
   }
 </style>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Christopher Soule — Autor de fantasía">
+<meta property="og:description" content="Los Cantares del Emperador y las crónicas del Orbam.">
+<meta property="og:image" content="assets/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Christopher Soule — Autor de fantasía">
+<meta name="twitter:description" content="Los Cantares del Emperador y las crónicas del Orbam.">
+<meta name="twitter:image" content="assets/og-image.jpg">
 </head>
 <body>
 
