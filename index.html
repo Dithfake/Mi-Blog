@@ -508,7 +508,7 @@ function render(){
   fetch('/.netlify/functions/subscriber-count')
     .then(r => r.json())
     .then(d => { const el = document.getElementById('ledgerSeguidores'); if (el) el.textContent = d.count ?? '0'; })
-    .catch(() => { const el = document.getElementById('ledgerSeguidores'); if (el) el.textContent = '0'; });
+    .catch(() => { const row = document.getElementById('ledgerSeguidores')?.closest('.row'); if (row) row.style.display = 'none'; });
 
   document.getElementById('worksGrid').innerHTML = (state.works||[]).map((w,i)=>`
     <article class="tome reveal in" id="obra-${slugify(w.title)}">
