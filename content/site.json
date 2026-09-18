@@ -1,33 +1,5 @@
 {
-  "profile": {
-    "name": "Christopher Soule",
-    "eyebrow": "Autor de Fantasía",
-    "tagline": "«Soy un escritor de polvo de estrellas; de historias antiguas y olvidadas por el pasar de los siglos.»",
-    "location": "México",
-    "since": "2021",
-    "extra": "Amigo de las piedras",
-    "avatar": "content/uploads/j-r-r-tolkien-mizael-canato.jpg",
-    "banner": "content/uploads/OIG1 (1).jpg"
-  },
-  "bio": [
-    "Soy un fervoroso cristiano, ávido lector, soy alguien que aspira a que mis historias lleguen a ser tan conocidas como las grandes obras de la fantasía contemporánea.",
-    "No aspiro quizás a ser el sucesor de Tolkien, ni mucho menos llegar a la grandeza que varios han llegado antes. Pero quizás, ganarme un lugar en el nicho de la fantasía, poder ser conocido y que mis obras sean amadas como yo las he amado a ellas."
-  ],
-  "stats": {
-    "obras": "02",
-    "listas": "09",
-    "seguidores": "0"
-  },
-  "sections": {
-    "obrasTitle": "Obras publicadas",
-    "obrasSubtitle": "Relatos y crónicas de diversos mundos",
-    "lecturasTitle": "Lecturas actuales",
-    "lecturasSubtitle": "Libros que estoy leyendo.",
-    "lectoresTitle": "Lista de lectores",
-    "lectoresSubtitle": "Algunas de las personas que me siguen",
-    "notasTitle": "Notas",
-    "notasSubtitle": "Apuntes sobre el oficio de escribir y otras cosas."
-  },
+  "credo": "Mi viaje aún continua",
   "works": [
     {
       "title": "Los Cantares del Emperador: La Destrucción de la Imparable",
@@ -46,6 +18,40 @@
       "status": "Publicado",
       "cover": "content/uploads/Primera parte portada.jpg",
       "buyLink": "https://www.amazon.com/dp/B0HBV1WRQL"
+    }
+  ],
+  "blog": [
+    {
+      "date": "2026-08-30",
+      "title": "Nuevo libro en mi colección",
+      "excerpt": "Me ha llegado un nuevo libro estos días, llamado \"El Cerro de las Campanas\". Es una novela histórica sobre una guerra en México, pero espero que me sirva para aprender a narrar algunas cosas más triviales dentro de una saga de novelas que aproximo hacer los próximos meses"
+    }
+  ],
+  "bio": [
+    "Soy un fervoroso cristiano, ávido lector, soy alguien que aspira a que mis historias lleguen a ser tan conocidas como las grandes obras de la fantasía contemporánea.",
+    "No aspiro quizás a ser el sucesor de Tolkien, ni mucho menos llegar a la grandeza que varios han llegado antes. Pero quizás, ganarme un lugar en el nicho de la fantasía, poder ser conocido y que mis obras sean amadas como yo las he amado a ellas."
+  ],
+  "profile": {
+    "name": "Christopher Soule",
+    "eyebrow": "Autor de Fantasía",
+    "tagline": "«Soy un escritor de polvo de estrellas; de historias antiguas y olvidadas por el pasar de los siglos.»",
+    "location": "México",
+    "since": "2021",
+    "extra": "Amigo de las piedras",
+    "avatar": "content/uploads/j-r-r-tolkien-mizael-canato.jpg",
+    "banner": "content/uploads/OIG1 (1).jpg"
+  },
+  "sagas": [
+    {
+      "title": "Los Cantares Del Emperador",
+      "desc": "Todos los mapas del Orbam",
+      "maps": [
+        {
+          "title": "Eudapia",
+          "image": "content/uploads/Mapa Eudapia compreso.png",
+          "pins": []
+        }
+      ]
     }
   ],
   "reading": [
@@ -84,22 +90,11 @@
       "author": "Ramón López Velarde",
       "status": "Leyendo",
       "cover": ""
-    }
-  ],
-  "readers": [],
-  "blog": [
+    },
     {
-      "date": "",
-      "title": "Nuevo libro en mi colección",
-      "excerpt": "Me ha llegado un nuevo libro estos días, llamado \"El Cerro de las Campanas\". Es una novela histórica sobre una guerra en México, pero espero que me sirva para aprender a narrar algunas cosas más triviales dentro de una saga de novelas que aproximo hacer los próximos meses"
-    }
-  ],
-  "credo": "Mi viaje aún continua",
-  "maps": [
-    {
-      "title": "Eudapia",
-      "image": "content/uploads/Mapa Eudapia compreso.png",
-      "pins": []
+      "title": "La Otra Parte",
+      "author": "Alfred Kubin",
+      "status": "Leyendo"
     }
   ],
   "progress": [
@@ -114,17 +109,27 @@
       "note": "Worldbulding"
     }
   ],
-  "sagas": [
+  "sections": {
+    "obrasTitle": "Obras publicadas",
+    "obrasSubtitle": "Relatos y crónicas de diversos mundos",
+    "lecturasTitle": "Lecturas actuales",
+    "lecturasSubtitle": "Libros que estoy leyendo.",
+    "lectoresTitle": "Lista de lectores",
+    "lectoresSubtitle": "Algunas de las personas que me siguen",
+    "notasTitle": "Notas",
+    "notasSubtitle": "Apuntes sobre el oficio de escribir y otras cosas."
+  },
+  "readers": [],
+  "maps": [
     {
-      "title": "Los Cantares Del Emperador",
-      "desc": "Todos los mapas del Orbam",
-      "maps": [
-        {
-          "title": "Eudapia",
-          "image": "content/uploads/Mapa Eudapia compreso.png",
-          "pins": []
-        }
-      ]
+      "title": "Eudapia",
+      "image": "content/uploads/Mapa Eudapia compreso.png",
+      "pins": []
     }
-  ]
+  ],
+  "stats": {
+    "obras": "02",
+    "listas": "10",
+    "seguidores": "0"
+  }
 }
