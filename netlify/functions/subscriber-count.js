@@ -20,14 +20,14 @@ exports.handler = async function () {
 
   try {
     const res = await fetch("https://api.buttondown.com/v1/subscribers?type=regular", {
-      headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=300", "Access-Control-Allow-Origin": "*" },
+      headers: { "Authorization": `Token ${apiKey}` }
     });
     const data = await res.json();
     const count = typeof data.count === "number" ? data.count : (data.results ? data.results.length : 0);
 
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=300" },
+      headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=300", "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify({ count })
     };
   } catch (err) {
