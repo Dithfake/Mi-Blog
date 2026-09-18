@@ -13,14 +13,14 @@ exports.handler = async function () {
   if (!apiKey) {
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify({ count: null, error: "BUTTONDOWN_API_KEY no configurada todavía" })
     };
   }
 
   try {
     const res = await fetch("https://api.buttondown.com/v1/subscribers?type=regular", {
-      headers: { Authorization: `Token ${apiKey}` }
+      headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=300", "Access-Control-Allow-Origin": "*" },
     });
     const data = await res.json();
     const count = typeof data.count === "number" ? data.count : (data.results ? data.results.length : 0);
@@ -33,7 +33,7 @@ exports.handler = async function () {
   } catch (err) {
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify({ count: null, error: "No se pudo consultar Buttondown" })
     };
   }
