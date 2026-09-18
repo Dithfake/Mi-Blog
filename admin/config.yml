@@ -104,22 +104,41 @@ collections:
 
           - { label: "Frase de cierre (pie de página)", name: "credo", widget: "string" }
 
-          - label: "Mapas"
-            name: "maps"
+          - label: "Progreso de escritura"
+            name: "progress"
             widget: "list"
-            label_singular: "Mapa"
-            summary: "{{title}}"
-            hint: "Sube la imagen del mapa. Para cada ficha de lore, x/y son la posición del punto en porcentaje (0 = borde izquierdo/superior, 100 = borde derecho/inferior) — ábrela en un editor de imágenes para calcular dónde cae cada lugar."
+            label_singular: "Proyecto"
+            summary: "{{title}} — {{fields.percent}}%"
             fields:
-              - { label: "Nombre del mapa", name: "title", widget: "string" }
-              - { label: "Imagen del mapa", name: "image", widget: "image" }
-              - label: "Fichas de lore"
-                name: "pins"
+              - { label: "Título del proyecto", name: "title", widget: "string" }
+              - { label: "Porcentaje (0-100)", name: "percent", widget: "number", value_type: "int", min: 0, max: 100 }
+              - { label: "Nota (en qué vas)", name: "note", widget: "string", required: false }
+
+          - label: "Sagas (mapas agrupados)"
+            name: "sagas"
+            widget: "list"
+            label_singular: "Saga"
+            summary: "{{title}}"
+            hint: "Cada saga agrupa sus propios mapas. En el sitio, la gente ve primero las sagas como tarjetas, y al elegir una se abren solo sus mapas."
+            fields:
+              - { label: "Nombre de la saga", name: "title", widget: "string" }
+              - { label: "Descripción breve", name: "desc", widget: "string", required: false }
+              - label: "Mapas de esta saga"
+                name: "maps"
                 widget: "list"
-                label_singular: "Ficha"
+                label_singular: "Mapa"
                 summary: "{{title}}"
+                hint: "Para cada ficha de lore, x/y son la posición del punto en porcentaje (0 = borde izquierdo/superior, 100 = borde derecho/inferior)."
                 fields:
-                  - { label: "Posición horizontal (0-100)", name: "x", widget: "number", value_type: "float" }
-                  - { label: "Posición vertical (0-100)", name: "y", widget: "number", value_type: "float" }
-                  - { label: "Nombre del lugar", name: "title", widget: "string" }
-                  - { label: "Descripción / lore", name: "desc", widget: "text" }
+                  - { label: "Nombre del mapa", name: "title", widget: "string" }
+                  - { label: "Imagen del mapa", name: "image", widget: "image" }
+                  - label: "Fichas de lore"
+                    name: "pins"
+                    widget: "list"
+                    label_singular: "Ficha"
+                    summary: "{{title}}"
+                    fields:
+                      - { label: "Posición horizontal (0-100)", name: "x", widget: "number", value_type: "float" }
+                      - { label: "Posición vertical (0-100)", name: "y", widget: "number", value_type: "float" }
+                      - { label: "Nombre del lugar", name: "title", widget: "string" }
+                      - { label: "Descripción / lore", name: "desc", widget: "text" }
