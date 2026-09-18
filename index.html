@@ -575,7 +575,7 @@ function render(){
     <div class="row"><span class="label">Listas de lectura</span><span class="value">${escapeHtml(state.stats.listas)}</span></div>
     <div class="row"><span class="label">Seguidores</span><span class="value" id="ledgerSeguidores">…</span></div>`;
 
-  fetch('/.netlify/functions/subscriber-count')
+  fetch('https://profound-taiyaki-99994f.netlify.app/.netlify/functions/subscriber-count')
     .then(r => r.json())
     .then(d => { const el = document.getElementById('ledgerSeguidores'); if (el) el.textContent = d.count ?? '0'; })
     .catch(() => { const row = document.getElementById('ledgerSeguidores')?.closest('.row'); if (row) row.style.display = 'none'; });
@@ -879,7 +879,7 @@ const followBtn = document.getElementById('followBtn');
 const followForm = document.getElementById('followForm');
 const followCount = document.getElementById('followCount');
 
-fetch('/.netlify/functions/subscriber-count')
+fetch('https://profound-taiyaki-99994f.netlify.app/.netlify/functions/subscriber-count')
   .then(r => r.json())
   .then(d => { followCount.textContent = (d.count ?? '0') + ' siguiendo'; })
   .catch(() => { followCount.textContent = ''; });
