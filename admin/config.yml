@@ -99,6 +99,8 @@ collections:
               - { label: "Fecha", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "DD/MM/YYYY", time_format: false }
               - { label: "Título", name: "title", widget: "string" }
               - { label: "Extracto", name: "excerpt", widget: "text" }
+              - { label: "Imagen (opcional)", name: "image", widget: "image", required: false }
+              - { label: "Contenido completo (opcional, para 'seguir leyendo')", name: "content", widget: "text", required: false }
 
           - { label: "Frase de cierre (pie de página)", name: "credo", widget: "string" }
 
