@@ -52,12 +52,14 @@
       "title": "Los Cantares Del Emperador",
       "desc": "Todos los mapas del Orbam",
       "maps": [
-        {
-          "title": "Eudapia",
-          "image": "content/uploads/Mapa Eudapia compreso.png",
-          "pins": []
-        }
-      ]
+    {
+      "title": "Eudapia",
+      "image": "/content/uploads/Mapa de Eudapia (para) (1).png",
+      "pins": []
+    },
+    {
+      "title": "Oscepia",
+      "image": "/content/uploads/Mapa Oscepia (1).png"
     }
   ],
   "reading": [
@@ -126,18 +128,6 @@
     "notasSubtitle": "Apuntes sobre el oficio de escribir y otras cosas."
   },
   "readers": [],
-  "maps": [
-    {
-      "title": "Eudapia",
-      "image": "/content/uploads/Mapa de Eudapia (para) (1).png",
-      "pins": []
-    },
-    {
-      "title": "Oscepia",
-      "image": "/content/uploads/Mapa Oscepia (1).png"
-    }
-  ],
-  "stats": {
     "obras": "02",
     "listas": "10",
     "seguidores": "0"
