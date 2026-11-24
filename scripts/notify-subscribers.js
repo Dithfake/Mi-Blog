@@ -1,97 +1,42 @@
-// Este script corre dentro de GitHub Actions cada vez que content/site.json
-// cambia. Compara lo que hay publicado contra content/.notified.json (un
-// registro de lo que ya se envió por correo) y manda un email nuevo por cada
-// nota o libro que todavía no se haya notificado.
+// Envía por Buttondown un correo por cada nota (blog) u obra publicada NUEVA.
+// Guarda lo ya enviado en content/.notified.json para no repetir.
+const fs = require('fs');
 
-const fs = require("fs");
-const path = require("path");
+const KEY = process.env.BUTTONDOWN_API_KEY;
+const SITE = (process.env.SITE_URL || 'https://www.christophersoule.com').replace(/\/$/, '');
+if (!KEY) { console.log('Sin BUTTONDOWN_API_KEY; nada que hacer.'); process.exit(0); }
 
-const SITE_PATH = path.join(__dirname, "..", "content", "site.json");
-const NOTIFIED_PATH = path.join(__dirname, "..", "content", ".notified.json");
-const API_KEY = process.env.BUTTONDOWN_API_KEY;
-const SITE_URL = process.env.SITE_URL || "";
+const site = JSON.parse(fs.readFileSync('content/site.json', 'utf8'));
+let sent = { ids: [] };
+try { sent = JSON.parse(fs.readFileSync('content/.notified.json', 'utf8')); } catch (e) {}
+const first = !fs.existsSync('content/.notified.json');
 
-if (!API_KEY) {
-  console.error("Falta la variable BUTTONDOWN_API_KEY (agrégala como secreto del repositorio).");
-  process.exit(1);
-}
-
-function slug(text) {
-  return (text || "")
-    .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
-
-function loadJson(file, fallback) {
-  try { return JSON.parse(fs.readFileSync(file, "utf8")); }
-  catch (e) { return fallback; }
-}
-
-const site = loadJson(SITE_PATH, {});
-const notified = loadJson(NOTIFIED_PATH, { sentIds: [] });
-const sentSet = new Set(notified.sentIds || []);
-
+const slug = s => 'x-' + Buffer.from(String(s)).toString('base64').replace(/[^a-z0-9]/gi, '').slice(0, 40);
 const items = [];
-
-(site.blog || []).forEach(entry => {
-  const id = "nota:" + slug(entry.title);
-  items.push({
-    id,
-    subject: `Nueva nota: ${entry.title}`,
-    body: `${entry.excerpt || ""}\n\nLee la nota completa aquí: ${SITE_URL}#bitacora`
-  });
-});
-
-(site.works || []).forEach(work => {
-  if ((work.status || "").toLowerCase() !== "publicado") return;
-  const id = "obra:" + slug(work.title);
-  items.push({
-    id,
-    subject: `Nuevo libro publicado: ${work.title}`,
-    body: `${work.desc || ""}\n\nLee más en: ${SITE_URL}#obras`
-  });
-});
-
-const pending = items.filter(item => !sentSet.has(item.id));
-
-if (pending.length === 0) {
-  console.log("No hay novedades nuevas que notificar.");
-  process.exit(0);
-}
-
-async function sendEmail(item) {
-  const res = await fetch("https://api.buttondown.com/v1/emails", {
-    method: "POST",
-    headers: {
-      "Authorization": `Token ${API_KEY}`,
-      "Content-Type": "application/json",
-      "X-Buttondown-Live-Dangerously": "true"
-    },
-    body: JSON.stringify({
-      subject: item.subject,
-      body: item.body,
-      status: "about_to_send"
-    })
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Buttondown respondió ${res.status}: ${text}`);
-  }
-  return res.json();
-}
+// Mismo identificador de nota que usa la página (assets/comun.js → noteSlug)
+const slugify = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const noteSlug = n => slugify((n.date || '') + ' ' + slugify(n.title).slice(0, 60));
+(site.blog || []).forEach(n => items.push({ id: 'blog:' + slug(n.title + n.date), subject: n.title, body: `${n.excerpt || ''}\n\nLéela completa en ${SITE}/notas.html?n=${noteSlug(n)}` }));
+(site.works || []).filter(w => (w.status || '').toLowerCase() === 'publicado')
+  .forEach(w => items.push({ id: 'work:' + slug(w.title), subject: 'Nueva obra: ' + w.title, body: `${(w.desc || '').slice(0, 400)}...\n\n${w.buyLink ? 'Cómpralo: ' + w.buyLink : SITE}` }));
 
 (async () => {
-  for (const item of pending) {
-    try {
-      await sendEmail(item);
-      sentSet.add(item.id);
-      console.log(`Enviado: ${item.subject}`);
-    } catch (err) {
-      console.error(`No se pudo enviar "${item.subject}":`, err.message);
-      // No lo marcamos como enviado, así se reintenta en el próximo push.
-    }
+  // Primera ejecución: solo registra lo existente, no envía correos viejos.
+  if (first) {
+    sent.ids = items.map(i => i.id);
+    fs.writeFileSync('content/.notified.json', JSON.stringify(sent, null, 2));
+    console.log('Primera ejecución: registrado lo existente sin enviar.');
+    return;
   }
-  fs.writeFileSync(NOTIFIED_PATH, JSON.stringify({ sentIds: Array.from(sentSet) }, null, 2));
+  for (const it of items.filter(i => !sent.ids.includes(i.id))) {
+    const res = await fetch('https://api.buttondown.com/v1/emails', {
+      method: 'POST',
+      headers: { Authorization: `Token ${KEY}`, 'Content-Type': 'application/json', 'X-Buttondown-Live-Dangerously': 'true' },
+      body: JSON.stringify({ subject: it.subject, body: it.body, status: 'about_to_send' })
+    });
+    console.log(it.id, res.status);
+    if (res.ok) sent.ids.push(it.id);
+  }
+  fs.writeFileSync('content/.notified.json', JSON.stringify(sent, null, 2));
 })();
