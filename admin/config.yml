@@ -15,6 +15,23 @@ collections:
         label: "Contenido del sitio"
         name: "site"
         fields:
+          # Las notas van primero para que publicar sea rápido:
+          # abre el panel, pulsa "Agregar nota" y la nueva aparece ARRIBA.
+          - label: "Notas"
+            name: "blog"
+            widget: "list"
+            label_singular: "nota"
+            add_to_top: true
+            collapsed: true
+            summary: "{{fields.date}} — {{title}}"
+            hint: "Al guardar, la nota se publica en la página de Notas, se envía por correo y (si está configurado) se publica en X e Instagram."
+            fields:
+              - { label: "Título", name: "title", widget: "string" }
+              - { label: "Texto", name: "excerpt", widget: "text", hint: "Lo principal de la nota. Es lo que se publica en redes." }
+              - { label: "Imagen (opcional)", name: "image", widget: "image", required: false }
+              - { label: "Continuación (opcional, para 'seguir leyendo')", name: "content", widget: "text", required: false }
+              - { label: "Fecha", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "DD/MM/YYYY", time_format: false, hint: "Se pone sola con la fecha de hoy." }
+
           - label: "Perfil"
             name: "profile"
             widget: "object"
@@ -89,18 +106,6 @@ collections:
               - { label: "Nombre", name: "name", widget: "string" }
               - { label: "Nota", name: "note", widget: "string", required: false }
               - { label: "Foto", name: "avatar", widget: "image", required: false }
-
-          - label: "Notas"
-            name: "blog"
-            widget: "list"
-            label_singular: "Entrada"
-            summary: "{{title}} — {{fields.date}}"
-            fields:
-              - { label: "Fecha", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "DD/MM/YYYY", time_format: false }
-              - { label: "Título", name: "title", widget: "string" }
-              - { label: "Extracto", name: "excerpt", widget: "text" }
-              - { label: "Imagen (opcional)", name: "image", widget: "image", required: false }
-              - { label: "Contenido completo (opcional, para 'seguir leyendo')", name: "content", widget: "text", required: false }
 
           - { label: "Frase de cierre (pie de página)", name: "credo", widget: "string" }
 
