@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notas — Christopher Soule</title>
+<meta name="description" content="Notas del escritorio de Christopher Soule: apuntes sobre el oficio de escribir y otras cosas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/estilo.css">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Notas — Christopher Soule">
+<meta property="og:description" content="Apuntes sobre el oficio de escribir y otras cosas.">
+<meta property="og:image" content="assets/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  body{ background:radial-gradient(ellipse 80% 40% at 50% 0%, rgba(179,64,30,.18), transparent 60%), var(--bg); min-height:100vh; }
+  .navlinks{ gap:22px; }
+  @media (max-width:560px){ .brand-name{ display:none; } .navlinks{ gap:16px; } .navlinks a{ font-size:12px; } }
+
+  main{ position:relative; z-index:1; max-width:760px; margin:0 auto; padding:56px 28px 80px; }
+  @media (max-width:560px){ main{ padding:36px 18px 60px; } }
+
+  /* encabezado de la sección */
+  .page-head{ text-align:center; margin-bottom:46px; }
+  .page-head h1{ font-size:clamp(32px, 5vw, 48px); margin-top:10px; text-shadow:0 2px 26px rgba(179,64,30,.35); }
+  .page-head p{ color:var(--ink-dim); max-width:540px; margin:14px auto 0; font-size:17px; }
+  .page-head .meta{ margin-top:18px; font-family:'Inter',sans-serif; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+  .page-head .meta b{ color:var(--gold); font-weight:600; }
+  .page-head .followbtn{ margin-top:24px; }
+  .follow-form{ display:none; margin-top:14px; }
+  .follow-form.open{ display:flex; }
+
+  /* lista de notas */
+  .notes{ display:flex; flex-direction:column; gap:26px; }
+  .mes{ font-family:'Inter',sans-serif; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted);
+    display:flex; align-items:center; gap:14px; margin:14px 0 -6px; }
+  .mes::after{ content:''; flex:1; height:1px; background:var(--line); }
+  .note-card{ background:var(--bg-2); border:1px solid var(--line); border-radius:10px; overflow:hidden; position:relative;
+    transition:border-color .25s, box-shadow .25s; }
+  .note-card::before{ content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--ember), var(--gold)); z-index:1; }
+  .note-card:hover{ border-color:var(--gold-soft); box-shadow:var(--shadow); }
+  .note-img{ width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .note-body{ padding:24px 28px 24px; }
+  .note-date{ font-family:'Inter', sans-serif; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+  .note-body h2{ font-size:21px; line-height:1.3; margin-bottom:10px; }
+  .note-body h2 a{ text-decoration:none; }
+  .note-body h2 a:hover{ color:var(--gold); }
+  .note-text{ color:var(--ink-dim); font-size:17px; margin:0; white-space:pre-line; overflow-wrap:anywhere; }
+  .note-full{ margin-top:12px; }
+  .note-foot{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 22px; margin-top:16px; }
+  .linkbtn{ background:none; border:none; padding:0; color:var(--gold); cursor:pointer; text-decoration:none;
+    font-family:'Inter',sans-serif; font-size:12.5px; letter-spacing:.04em; border-bottom:1px solid var(--gold-soft); }
+  .linkbtn:hover{ border-color:var(--gold); }
+  .linkbtn.quiet{ color:var(--muted); border-color:transparent; }
+  .linkbtn.quiet:hover{ color:var(--gold); }
+  .more{ text-align:center; margin-top:40px; }
+  .empty{ text-align:center; color:var(--muted); padding:40px 0; }
+
+  /* una nota abierta */
+  .back{ display:inline-flex; margin-bottom:28px; }
+  .reading{ background:var(--bg-2); border:1px solid var(--line); border-radius:10px; overflow:hidden; position:relative; }
+  .reading::before{ content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--ember), var(--gold)); z-index:1; }
+  .reading .note-body{ padding:34px 40px 30px; }
+  @media (max-width:560px){ .reading .note-body{ padding:26px 22px; } }
+  .reading h1{ font-size:clamp(24px, 4vw, 32px); line-height:1.25; margin-bottom:18px; }
+  .reading .note-text{ font-size:19px; color:var(--ink); line-height:1.7; }
+  .reading .note-text + .note-text{ margin-top:18px; color:var(--ink-dim); }
+  .prevnext{ display:flex; justify-content:space-between; gap:16px; margin-top:22px; }
+  .prevnext a{ max-width:48%; text-decoration:none; font-family:'Inter',sans-serif; font-size:12.5px; color:var(--muted); }
+  .prevnext a span{ display:block; color:var(--gold); font-family:'Cinzel',serif; font-size:15px; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .prevnext a:hover span{ text-decoration:underline; }
+  .prevnext a.next{ text-align:right; margin-left:auto; }
+  .comments{ margin-top:44px; }
+  .comments h3{ font-size:18px; text-align:center; margin-bottom:18px; }
+</style>
+</head>
+<body>
+
+<div class="motes" id="motes"></div>
+
+<nav class="topnav solid">
+  <a class="brand" href="index.html">
+    <div class="sigil" id="navAvatar"><span>CS</span></div>
+    <span class="brand-name" id="navName">Christopher Soule</span>
+  </a>
+  <ul class="navlinks">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="index.html#obras">Obras</a></li>
+    <li><a href="mapas.html">Mapas</a></li>
+    <li><a href="notas.html" class="current" id="navNotas">Notas</a></li>
+  </ul>
+</nav>
+
+<main id="main"><p class="empty">Cargando…</p></main>
+
+<footer class="sitefoot">
+  <p class="credo" id="credo"></p>
+  <p class="copy">© <span id="anio">2026</span> Christopher Soule</p>
+</footer>
+
+<script src="assets/comun.js"></script>
+<script>
+const POR_PAGINA = 10;      // cuántas notas se ven antes de "Ver notas anteriores"
+let state = DEFAULT_STATE;
+let notas = [];
+let mostradas = POR_PAGINA;
+let seguidores = null;
+const abiertas = new Set();
+
+const MESES_LARGOS = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const titulo = () => (state.sections||{}).notasTitle || 'Notas';
+const urlNota = n => `${location.origin}${location.pathname}?n=${encodeURIComponent(noteSlug(n))}`;
+function mesDe(iso){ const d = new Date(iso); return isNaN(d) ? '' : `${MESES_LARGOS[d.getUTCMonth()]} ${d.getUTCFullYear()}`; }
+
+/* ============ lista de notas ============ */
+function vistaLista(){
+  document.title = `${titulo()} — ${state.profile.name}`;
+  const visibles = notas.slice(0, mostradas);
+  let mesActual = '';
+  const tarjetas = visibles.map(n => {
+    const m = mesDe(n.date);
+    const sep = m && m !== mesActual ? `<div class="mes">${escapeHtml(m)}</div>` : '';
+    mesActual = m;
+    return sep + tarjeta(n);
+  }).join('');
+
+  document.getElementById('main').innerHTML = `
+    <header class="page-head">
+      <p class="eyebrow">Notas del escritorio</p>
+      <h1>${escapeHtml(titulo())}</h1>
+      ${(state.sections||{}).notasSubtitle ? `<p>${escapeHtml(state.sections.notasSubtitle)}</p>` : ''}
+      <div class="meta"><b>${notas.length}</b> nota${notas.length===1?'':'s'} · <b id="segCount">${seguidores ?? '—'}</b> lectores por correo</div>
+      <button class="followbtn" id="followBtn" aria-expanded="false"><span class="followbtn-icon">✚</span><span>Recibir cada nota por correo</span></button>
+      <form class="subscribe-form follow-form" id="followForm" data-buttondown action="https://buttondown.com/api/emails/embed-subscribe/Christopher_Soule" method="post" target="popupwindow">
+        <input type="email" name="email" placeholder="tu@correo.com" required aria-label="Tu correo">
+        <button type="submit">Confirmar</button>
+      </form>
+    </header>
+    <div class="notes">${tarjetas || '<p class="empty">Aún no hay notas.</p>'}</div>
+    ${notas.length > mostradas ? `<div class="more"><button class="ghostbtn" id="masBtn">Ver notas anteriores (${notas.length - mostradas}) ▾</button></div>` : ''}`;
+
+  iniciarFormulariosSuscripcion();
+  const fb = document.getElementById('followBtn'), ff = document.getElementById('followForm');
+  fb.onclick = () => { const o = ff.classList.toggle('open'); fb.setAttribute('aria-expanded', o); if (o) ff.querySelector('input').focus(); };
+  const mas = document.getElementById('masBtn');
+  if (mas) mas.onclick = () => { const y = scrollY; mostradas += POR_PAGINA; vistaLista(); scrollTo(0, y); };
+
+  document.querySelectorAll('.note-card').forEach(card => {
+    const n = notas.find(x => noteSlug(x) === card.dataset.slug);
+    card.querySelectorAll('[data-abrir]').forEach(a => a.onclick = e => { e.preventDefault(); irA(noteSlug(n)); });
+    const share = card.querySelector('[data-compartir]');
+    if (share) share.onclick = () => compartir(urlNota(n), n.title);
+    const leer = card.querySelector('[data-leer]');
+    if (leer) leer.onclick = () => {
+      const full = card.querySelector('.note-full');
+      const abrir = full.hidden;
+      full.hidden = !abrir;
+      leer.textContent = abrir ? '← Leer menos' : 'Seguir leyendo →';
+      abrir ? abiertas.add(card.dataset.slug) : abiertas.delete(card.dataset.slug);
+    };
+  });
+}
+
+function tarjeta(n){
+  const slug = noteSlug(n);
+  const img = safeSrc(n.image);
+  const tieneMas = n.content && n.content.trim();
+  const abierta = abiertas.has(slug);
+  return `
+  <article class="note-card" data-slug="${escapeHtml(slug)}">
+    ${img ? `<img class="note-img" src="${img}" alt="" loading="lazy">` : ''}
+    <div class="note-body">
+      <div class="note-date">${escapeHtml(formatDate(n.date))}</div>
+      <h2><a href="?n=${encodeURIComponent(slug)}" data-abrir>${escapeHtml(n.title)}</a></h2>
+      <p class="note-text">${escapeHtml(n.excerpt)}</p>
+      ${tieneMas ? `<div class="note-full" ${abierta ? '' : 'hidden'}><p class="note-text">${escapeHtml(n.content)}</p></div>` : ''}
+      <div class="note-foot">
+        ${tieneMas ? `<button class="linkbtn" data-leer>${abierta ? '← Leer menos' : 'Seguir leyendo →'}</button>` : ''}
+        <a class="linkbtn quiet" href="?n=${encodeURIComponent(slug)}" data-abrir>Comentarios</a>
+        <button class="linkbtn quiet" data-compartir>Compartir</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+/* ============ una nota abierta ============ */
+function vistaNota(slug){
+  const i = notas.findIndex(n => noteSlug(n) === slug);
+  const main = document.getElementById('main');
+  const volver = `<button class="ghostbtn back" id="backBtn">← Todas las notas</button>`;
+
+  if (i === -1) {
+    main.innerHTML = volver + '<p class="empty">Esta nota ya no existe o cambió de nombre.</p>';
+    document.getElementById('backBtn').onclick = () => irA(null);
+    return;
+  }
+  const n = notas[i], nueva = notas[i-1], vieja = notas[i+1];
+  const img = safeSrc(n.image);
+  document.title = `${n.title} — ${state.profile.name}`;
+
+  main.innerHTML = volver + `
+    <article class="reading">
+      ${img ? `<img class="note-img" src="${img}" alt="">` : ''}
+      <div class="note-body">
+        <div class="note-date">${escapeHtml(formatDate(n.date))}</div>
+        <h1>${escapeHtml(n.title)}</h1>
+        <p class="note-text">${escapeHtml(n.excerpt)}</p>
+        ${n.content && n.content.trim() ? `<p class="note-text">${escapeHtml(n.content)}</p>` : ''}
+        <div class="note-foot"><button class="linkbtn" id="shareBtn">Compartir esta nota</button></div>
+      </div>
+    </article>
+    <nav class="prevnext">
+      ${vieja ? `<a href="?n=${encodeURIComponent(noteSlug(vieja))}" data-slug="${escapeHtml(noteSlug(vieja))}">← Anterior<span>${escapeHtml(vieja.title)}</span></a>` : ''}
+      ${nueva ? `<a class="next" href="?n=${encodeURIComponent(noteSlug(nueva))}" data-slug="${escapeHtml(noteSlug(nueva))}">Siguiente →<span>${escapeHtml(nueva.title)}</span></a>` : ''}
+    </nav>
+    <section class="comments" id="comentarios">
+      <h3>Comentarios</h3>
+      <div id="giscus"></div>
+    </section>`;
+
+  document.getElementById('backBtn').onclick = () => irA(null);
+  document.getElementById('shareBtn').onclick = () => compartir(urlNota(n), n.title);
+  main.querySelectorAll('.prevnext a').forEach(a => a.onclick = e => { e.preventDefault(); irA(a.dataset.slug); });
+  cargarComentarios(slug);
+}
+
+/* Comentarios con Giscus: cada nota tiene su propio hilo
+   (en las Discussions de tu repo, con el título "nota-<identificador>"). */
+function cargarComentarios(slug){
+  const s = document.createElement('script');
+  s.src = 'https://giscus.app/client.js';
+  Object.entries({
+    'data-repo': 'Dithfake/Mi-Blog',
+    'data-repo-id': 'R_kgDOT8sSRg',
+    'data-category': 'Announcements',
+    'data-category-id': 'DIC_kwDOT8sSRs4DDrfj',
+    'data-mapping': 'specific',
+    'data-term': 'nota-' + slug,
+    'data-strict': '1',
+    'data-reactions-enabled': '1',
+    'data-emit-metadata': '0',
+    'data-input-position': 'bottom',
+    'data-theme': 'transparent_dark',
+    'data-lang': 'es',
+    'data-loading': 'lazy'
+  }).forEach(([k,v]) => s.setAttribute(k, v));
+  s.crossOrigin = 'anonymous';
+  s.async = true;
+  document.getElementById('giscus').appendChild(s);
+}
+
+/* ============ navegación (sin recargar la página) ============ */
+function irA(slug){
+  if (slug && !history.state) history.replaceState({ y: scrollY }, '');
+  history.pushState({ slug }, '', slug ? `?n=${encodeURIComponent(slug)}` : location.pathname);
+  mostrar(slug);
+  scrollTo(0, 0);
+}
+function mostrar(slug){ slug ? vistaNota(slug) : vistaLista(); }
+window.addEventListener('popstate', e => {
+  const slug = new URLSearchParams(location.search).get('n');
+  mostrar(slug);
+  if (!slug && e.state && e.state.y) setTimeout(() => scrollTo(0, e.state.y), 0);
+});
+
+/* ============ arranque ============ */
+cargarSitio().then(data => {
+  state = data;
+  notas = notasOrdenadas(state);
+  document.getElementById('navName').textContent = state.profile.name;
+  document.getElementById('navNotas').textContent = titulo();
+  document.getElementById('credo').textContent = state.credo || '';
+  document.getElementById('anio').textContent = new Date().getFullYear();
+  pintarAvatares(state, ['navAvatar']);
+  mostrar(new URLSearchParams(location.search).get('n'));
+});
+cargarSeguidores(n => { seguidores = n; const el = document.getElementById('segCount'); if (el) el.textContent = n; });
+iniciarChispas();
+</script>
+</body>
+</html>

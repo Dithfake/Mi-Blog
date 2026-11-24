@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapas — Christopher Soule</title>
+<meta name="description" content="Atlas de los mundos de Christopher Soule: reinos, territorios y su historia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/estilo.css">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mapas — Christopher Soule">
+<meta property="og:description" content="Reinos y territorios de las sagas de Christopher Soule.">
+<meta property="og:image" content="assets/og-image.jpg">
+<style>
+  body{ background:radial-gradient(ellipse 80% 50% at 50% 0%, rgba(179,64,30,.16), transparent 60%), var(--bg); min-height:100vh; }
+  .navlinks{ gap:22px; }
+  @media (max-width:560px){ .brand-name{ display:none; } .navlinks{ gap:16px; } .navlinks a{ font-size:12px; } }
+
+  .atlas{ position:relative; z-index:1; max-width:1320px; margin:0 auto; padding:34px 28px 70px; }
+  @media (max-width:560px){ .atlas{ padding:22px 14px 50px; } }
+
+  .atlas-head{ display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px 30px; margin-bottom:22px; }
+  .atlas-head h1{ font-size:clamp(26px, 4vw, 40px); margin-top:6px; text-shadow:0 2px 24px rgba(179,64,30,.35); }
+  .atlas-head p.desc{ margin:6px 0 0; color:var(--ink-dim); font-size:17px; }
+  .chips{ display:flex; gap:8px; flex-wrap:wrap; }
+  .chip{ background:transparent; border:1px solid var(--gold-soft); color:var(--ink-dim); border-radius:999px; padding:7px 16px; cursor:pointer;
+    font-family:'Inter',sans-serif; font-size:12.5px; letter-spacing:.05em; text-transform:uppercase; text-decoration:none; transition:.2s; white-space:nowrap; }
+  .chip:hover{ border-color:var(--gold); color:var(--gold); }
+  .chip.active{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
+  .chips-label{ font-family:'Inter',sans-serif; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+
+  /* tarjetas de sagas (cuando hay varias y no se ha elegido) */
+  .saga-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:26px; }
+  .saga-card{ display:block; background:var(--bg-2); border:1px solid var(--line); border-radius:10px; overflow:hidden; text-decoration:none; transition:.2s; }
+  .saga-card:hover{ border-color:var(--gold-soft); transform:translateY(-3px); }
+  .saga-thumb{ height:190px; position:relative; background:linear-gradient(155deg, #7a2712 0%, #3a140b 55%, #150a06 100%); overflow:hidden; }
+  .saga-thumb img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .6s; }
+  .saga-card:hover .saga-thumb img{ transform:scale(1.05); }
+  .saga-thumb .count{ position:absolute; bottom:10px; right:12px; font-family:'Inter',sans-serif; font-size:11px;
+    color:var(--gold); background:rgba(19,13,8,.75); border:1px solid var(--gold-soft); border-radius:999px; padding:3px 10px; }
+  .saga-card .info{ padding:18px 20px; }
+  .saga-card h2{ font-size:18px; margin-bottom:4px; }
+  .saga-card p{ font-family:'Inter',sans-serif; font-size:13px; color:var(--muted); margin:0; }
+
+  /* visor */
+  .viewer{ display:grid; grid-template-columns:minmax(0,1fr) 310px; gap:22px; align-items:start; }
+  @media (max-width:980px){ .viewer{ grid-template-columns:1fr; } }
+  .map-tabs{ margin-bottom:14px; }
+
+  .stage{ position:relative; height:min(76vh, 820px); border:1px solid var(--line); border-radius:12px; overflow:hidden;
+    background:radial-gradient(ellipse at center, #241a10 0%, #0e0905 100%); box-shadow:var(--shadow);
+    touch-action:none; cursor:grab; user-select:none; -webkit-user-select:none; }
+  @media (max-width:560px){ .stage{ height:62vh; } }
+  .stage.dragging{ cursor:grabbing; }
+  .stage:fullscreen{ height:100vh !important; border-radius:0; border:none; }
+  .inner{ position:absolute; left:0; top:0; transform-origin:0 0; will-change:transform; --s:1; }
+  .inner.anim{ transition:transform .45s cubic-bezier(.2,.7,.2,1); }
+  .inner img{ width:100%; height:100%; display:block; pointer-events:none; -webkit-user-drag:none; }
+  .stage .loading{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--muted); font-family:'Inter',sans-serif; font-size:13px; }
+
+  .pin{ position:absolute; width:20px; height:20px; padding:0; border-radius:50%; cursor:pointer; z-index:2;
+    background:var(--ember); border:2px solid var(--gold); box-shadow:0 0 0 4px rgba(0,0,0,.35), 0 0 14px rgba(205,162,51,.6);
+    transform:translate(-50%,-50%) scale(calc(1 / var(--s))); transition:box-shadow .2s; }
+  .pin::after{ content:attr(data-label); position:absolute; left:50%; bottom:calc(100% + 8px); transform:translateX(-50%); white-space:nowrap;
+    font-family:'Cinzel',serif; font-size:13px; font-weight:600; color:var(--ink); background:rgba(19,13,8,.88); border:1px solid var(--gold-soft);
+    border-radius:6px; padding:3px 9px; opacity:0; pointer-events:none; transition:opacity .2s; }
+  .pin:hover::after, .pin.active::after, .pin:focus-visible::after{ opacity:1; }
+  .pin.active{ background:var(--gold); box-shadow:0 0 0 5px rgba(205,162,51,.25), 0 0 22px rgba(205,162,51,.9); }
+
+  .controls{ position:absolute; right:12px; bottom:12px; display:flex; flex-direction:column; gap:6px; z-index:5; }
+  .cbtn{ width:38px; height:38px; border-radius:8px; background:rgba(19,13,8,.82); border:1px solid var(--gold-soft); color:var(--gold);
+    font-size:18px; line-height:1; cursor:pointer; font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; }
+  .cbtn:hover{ background:rgba(19,13,8,.98); border-color:var(--gold); }
+  .cbtn svg{ width:17px; height:17px; }
+  .hint{ position:absolute; left:12px; bottom:12px; font-family:'Inter',sans-serif; font-size:11px; color:var(--muted);
+    background:rgba(19,13,8,.7); padding:5px 11px; border-radius:999px; pointer-events:none; z-index:5; transition:opacity .4s; max-width:calc(100% - 80px); }
+  @media (max-width:560px){ .hint{ display:none; } .controls{ flex-direction:row; right:8px; bottom:8px; } .cbtn{ width:34px; height:34px; } }
+  .zoomlevel{ position:absolute; left:12px; top:12px; font-family:'Inter',sans-serif; font-size:11px; color:var(--gold);
+    background:rgba(19,13,8,.7); border:1px solid var(--line); padding:4px 10px; border-radius:999px; z-index:5; }
+
+  /* modo cartógrafo (para sacar coordenadas x/y de las fichas) */
+  .coordbar{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:12px; padding:10px 14px; border:1px dashed var(--gold-soft); border-radius:8px;
+    font-family:'Inter',sans-serif; font-size:13px; color:var(--ink-dim); background:rgba(205,162,51,.05); }
+  .coordbar b{ color:var(--gold); font-weight:600; }
+  .coordmark{ position:absolute; width:14px; height:14px; border-radius:50%; border:2px dashed var(--gold); background:rgba(205,162,51,.25);
+    transform:translate(-50%,-50%) scale(calc(1 / var(--s))); pointer-events:none; z-index:3; }
+
+  /* panel lateral */
+  .panel{ background:var(--bg-2); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  @media (min-width:981px){ .panel{ position:sticky; top:96px; max-height:calc(100vh - 120px); display:flex; flex-direction:column; } }
+  .lore{ padding:20px 22px; border-bottom:1px solid var(--line); background:linear-gradient(180deg, var(--bg-3), var(--bg-2)); }
+  .lore h3{ font-size:19px; color:var(--gold); margin:4px 0 8px; }
+  .lore p{ color:var(--ink-dim); margin:0; font-size:16px; line-height:1.6; white-space:pre-line; }
+  .lore p.eyebrow{ font-size:11.5px; color:var(--gold); line-height:1.4; }
+  .lore .lore-actions{ display:flex; gap:14px; margin-top:14px; }
+  .linkbtn{ background:none; border:none; padding:0; color:var(--gold); cursor:pointer; font-family:'Inter',sans-serif; font-size:12.5px; }
+  .linkbtn:hover{ text-decoration:underline; }
+  .places-head{ padding:14px 22px 8px; font-family:'Inter',sans-serif; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+  .places{ list-style:none; margin:0; padding:0 10px 12px; overflow:auto; }
+  .places button{ width:100%; display:flex; align-items:center; gap:10px; text-align:left; background:none; border:none; color:var(--ink-dim);
+    padding:9px 12px; border-radius:8px; cursor:pointer; font-family:'EB Garamond',serif; font-size:16.5px; }
+  .places button::before{ content:''; width:8px; height:8px; flex:none; border-radius:50%; background:var(--ember); border:1px solid var(--gold); }
+  .places button:hover{ background:rgba(205,162,51,.07); color:var(--ink); }
+  .places button.active{ background:rgba(205,162,51,.12); color:var(--gold); }
+  .panel .empty{ padding:22px; color:var(--muted); font-size:15px; font-style:italic; }
+</style>
+</head>
+<body>
+
+<div class="motes" id="motes"></div>
+
+<nav class="topnav solid">
+  <a class="brand" href="index.html">
+    <div class="sigil" id="navAvatar"><span>CS</span></div>
+    <span class="brand-name" id="navName">Christopher Soule</span>
+  </a>
+  <ul class="navlinks">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="index.html#obras">Obras</a></li>
+    <li><a href="mapas.html" class="current">Mapas</a></li>
+    <li><a href="notas.html" id="navNotas">Notas</a></li>
+  </ul>
+</nav>
+
+<main class="atlas" id="atlas">
+  <div class="atlas-head"><div><p class="eyebrow">Cartografía</p><h1>Atlas</h1></div></div>
+  <p style="color:var(--muted)">Cargando…</p>
+</main>
+
+<script src="assets/comun.js"></script>
+<script>
+let state = DEFAULT_STATE;
+let sagas = [];
+let sel = { saga:null, mapa:0, lugar:null };
+const MODO_COORDS = /coord/i.test(location.hash + location.search);
+
+const ICON_FULL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+
+function getSagas(){
+  if (state.sagas && state.sagas.length) return state.sagas;
+  if (state.maps && state.maps.length) return [{ title:'Mapas', maps: state.maps }];
+  return [];
+}
+
+/* ---------- dirección (enlaces directos a saga / mapa / lugar) ---------- */
+function leerURL(){
+  const q = new URLSearchParams(location.search);
+  const si = sagas.findIndex(s => slugify(s.title) === q.get('saga'));
+  sel.saga = si >= 0 ? si : (sagas.length === 1 ? 0 : null);
+  sel.mapa = 0; sel.lugar = null;
+  if (sel.saga !== null) {
+    const maps = sagas[sel.saga].maps || [];
+    const mi = maps.findIndex(m => slugify(m.title) === q.get('mapa'));
+    if (mi >= 0) sel.mapa = mi;
+    const pins = (maps[sel.mapa] && maps[sel.mapa].pins) || [];
+    const li = pins.findIndex(p => slugify(p.title) === q.get('lugar'));
+    if (li >= 0) sel.lugar = li;
+  }
+}
+function escribirURL(push){
+  const q = new URLSearchParams();
+  if (sel.saga !== null) {
+    const saga = sagas[sel.saga];
+    q.set('saga', slugify(saga.title));
+    const map = (saga.maps||[])[sel.mapa];
+    if (map && sel.mapa > 0) q.set('mapa', slugify(map.title));
+    const pin = map && (map.pins||[])[sel.lugar];
+    if (pin) q.set('lugar', slugify(pin.title));
+  }
+  const url = location.pathname + (q.toString() ? '?' + q : '') + location.hash;
+  history[push ? 'pushState' : 'replaceState'](null, '', url);
+}
+window.addEventListener('popstate', () => { leerURL(); pintar(); });
+
+/* ---------- pintar la página ---------- */
+function pintar(){
+  const atlas = document.getElementById('atlas');
+
+  if (!sagas.length) {
+    atlas.innerHTML = cabecera('Atlas', '') + '<p style="color:var(--muted)">Todavía no hay sagas con mapas publicadas.</p>';
+    return;
+  }
+
+  // Varias sagas y ninguna elegida: mostrar las tarjetas
+  if (sel.saga === null) {
+    document.title = `Mapas — ${state.profile.name}`;
+    atlas.innerHTML = cabecera('Atlas', 'Elige una saga para explorar sus reinos y territorios.') +
+      `<div class="saga-grid">${sagas.map(s => {
+        const thumb = safeSrc(s.maps && s.maps[0] && s.maps[0].image);
+        const c = (s.maps||[]).length;
+        return `<a class="saga-card" href="?saga=${encodeURIComponent(slugify(s.title))}" data-saga="${escapeHtml(slugify(s.title))}">
+          <div class="saga-thumb">${thumb ? `<img src="${thumb}" alt="" loading="lazy">` : ''}<span class="count">${c} mapa${c===1?'':'s'}</span></div>
+          <div class="info"><h2>${escapeHtml(s.title)}</h2>${s.desc ? `<p>${escapeHtml(s.desc)}</p>` : ''}</div></a>`;
+      }).join('')}</div>`;
+    atlas.querySelectorAll('.saga-card').forEach(a => a.onclick = (e) => {
+      e.preventDefault();
+      sel = { saga: sagas.findIndex(s => slugify(s.title) === a.dataset.saga), mapa:0, lugar:null };
+      escribirURL(true); pintar(); scrollTo(0,0);
+    });
+    return;
+  }
+
+  const saga = sagas[sel.saga];
+  const maps = saga.maps || [];
+  const map = maps[sel.mapa];
+  document.title = `${saga.title}${map ? ' · ' + map.title : ''} — Mapas`;
+
+  const otrasSagas = sagas.length > 1 ? `
+    <div><div class="chips-label">Sagas</div><div class="chips">
+      ${sagas.map((s,i)=>`<button class="chip ${i===sel.saga?'active':''}" data-saga="${i}">${escapeHtml(s.title)}</button>`).join('')}
+    </div></div>` : '';
+
+  atlas.innerHTML = cabecera(saga.title, saga.desc, otrasSagas) +
+    (!maps.length ? '<p style="color:var(--muted)">Esta saga todavía no tiene mapas.</p>' : `
+    ${maps.length > 1 ? `<div class="chips map-tabs">${maps.map((m,i)=>`<button class="chip ${i===sel.mapa?'active':''}" data-mapa="${i}">${escapeHtml(m.title)}</button>`).join('')}</div>` : ''}
+    ${MODO_COORDS ? `<div class="coordbar">📍 <span>Modo cartógrafo: haz clic en el mapa y copia los valores en tu ficha de lore.</span> <b id="coordOut">x: — · y: —</b></div>` : ''}
+    <div class="viewer">
+      <div class="stage" id="stage">
+        ${map.image ? `<div class="loading">Desplegando el mapa…</div>` : `<div class="loading">Este mapa todavía no tiene una imagen subida.</div>`}
+      </div>
+      <aside class="panel" id="panel"></aside>
+    </div>`);
+
+  atlas.querySelectorAll('[data-saga]').forEach(b => b.onclick = () => { sel = { saga:+b.dataset.saga, mapa:0, lugar:null }; escribirURL(true); pintar(); });
+  atlas.querySelectorAll('[data-mapa]').forEach(b => b.onclick = () => { sel.mapa = +b.dataset.mapa; sel.lugar = null; escribirURL(true); pintar(); });
+
+  if (map) { pintarPanel(map); if (map.image) montarMapa(map); }
+}
+
+function cabecera(titulo, desc, extra = ''){
+  return `<div class="atlas-head">
+    <div><p class="eyebrow">Cartografía</p><h1>${escapeHtml(titulo)}</h1>${desc ? `<p class="desc">${escapeHtml(desc)}</p>` : ''}</div>
+    ${extra}</div>`;
+}
+
+/* ---------- panel con la lista de lugares y su historia ---------- */
+function pintarPanel(map){
+  const pins = map.pins || [];
+  const pin = pins[sel.lugar];
+  const panel = document.getElementById('panel');
+  panel.innerHTML = `
+    ${pin ? `<div class="lore">
+        <p class="eyebrow">${escapeHtml(map.title)}</p>
+        <h3>${escapeHtml(pin.title)}</h3>
+        <p>${escapeHtml(pin.desc)}</p>
+        <div class="lore-actions">
+          <button class="linkbtn" id="loreShare">Compartir este lugar</button>
+          <button class="linkbtn" id="loreClose">Cerrar</button>
+        </div></div>`
+      : `<div class="lore"><p class="eyebrow">${escapeHtml(map.title)}</p>
+         <p style="margin-top:8px">${pins.length ? 'Toca un punto del mapa o un nombre de la lista para leer su historia.' : 'Arrastra para recorrer el mapa y usa la rueda o dos dedos para acercarte.'}</p></div>`}
+    ${pins.length ? `<div class="places-head">Lugares (${pins.length})</div>
+      <ul class="places">${pins.map((p,i)=>`<li><button class="${i===sel.lugar?'active':''}" data-lugar="${i}">${escapeHtml(p.title)}</button></li>`).join('')}</ul>`
+      : '<div class="empty">Este mapa todavía no tiene lugares marcados.</div>'}`;
+
+  panel.querySelectorAll('[data-lugar]').forEach(b => b.onclick = () => elegirLugar(+b.dataset.lugar, true));
+  const c = document.getElementById('loreClose'); if (c) c.onclick = () => elegirLugar(null);
+  const s = document.getElementById('loreShare'); if (s) s.onclick = () => compartir(location.href, pin.title);
+}
+
+function elegirLugar(i, volar){
+  sel.lugar = i;
+  escribirURL(false);
+  const map = sagas[sel.saga].maps[sel.mapa];
+  pintarPanel(map);
+  document.querySelectorAll('.pin').forEach((p,k) => p.classList.toggle('active', k === i));
+  if (i !== null && volar) volarA(map.pins[i]);
+  if (i !== null && window.innerWidth <= 980) document.getElementById('panel').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+/* ================= mapa con zoom, arrastre y pellizco ================= */
+let Z = null;   // estado del visor actual
+
+function montarMapa(map){
+  const stage = document.getElementById('stage');
+  const img = new Image();
+  img.onload = () => {
+    const pins = map.pins || [];
+    stage.innerHTML = `
+      <div class="inner" id="inner">
+        <img src="${safeSrc(map.image)}" alt="${escapeHtml(map.title)}" draggable="false">
+        ${pins.map((p,i)=>`<button class="pin ${i===sel.lugar?'active':''}" data-pin="${i}" style="left:${Number(p.x)||0}%; top:${Number(p.y)||0}%;"
+            data-label="${escapeHtml(p.title)}" aria-label="${escapeHtml(p.title)}"></button>`).join('')}
+      </div>
+      <div class="zoomlevel" id="zoomLevel">100%</div>
+      <div class="controls">
+        <button class="cbtn" data-z="in" aria-label="Acercar">+</button>
+        <button class="cbtn" data-z="out" aria-label="Alejar">−</button>
+        <button class="cbtn" data-z="reset" aria-label="Ver el mapa completo" style="font-size:14px">⤾</button>
+        <button class="cbtn" data-z="full" aria-label="Pantalla completa">${ICON_FULL}</button>
+      </div>
+      <div class="hint" id="hint">Arrastra para moverte · rueda o dos dedos para acercar · doble clic para enfocar</div>`;
+
+    Z = { stage, inner: stage.querySelector('#inner'), nw: img.naturalWidth, nh: img.naturalHeight, w:0, h:0, s:1, tx:0, ty:0, max:6 };
+    altoSegunMapa();
+    ajustar(true);
+    if (sel.lugar !== null && pins[sel.lugar]) setTimeout(() => volarA(pins[sel.lugar]), 120);
+
+    stage.querySelectorAll('.pin').forEach(b => b.onclick = (e) => { e.stopPropagation(); elegirLugar(+b.dataset.pin, false); });
+    stage.querySelectorAll('[data-z]').forEach(b => b.onclick = () => {
+      const r = stage.getBoundingClientRect(), cx = r.left + r.width/2, cy = r.top + r.height/2;
+      if (b.dataset.z === 'in') zoomEn(1.4, cx, cy, true);
+      if (b.dataset.z === 'out') zoomEn(1/1.4, cx, cy, true);
+      if (b.dataset.z === 'reset') { Z.s = 1; centrar(true); }
+      if (b.dataset.z === 'full') pantallaCompleta();
+    });
+    gestos(stage);
+    setTimeout(() => { const h = document.getElementById('hint'); if (h) h.style.opacity = 0; }, 5000);
+  };
+  img.onerror = () => { stage.innerHTML = '<div class="loading">No se pudo cargar la imagen del mapa.</div>'; };
+  const ruta = String(map.image || '').trim().replace(/^\//, '');
+  if (/^(javascript|data|vbscript):/i.test(ruta)) return;
+  img.src = ruta;
+}
+
+// El visor toma la forma del mapa (sin franjas vacías), con un alto máximo.
+function altoSegunMapa(){
+  if (!Z || document.fullscreenElement) return;
+  const maxH = Math.min(window.innerHeight * (window.innerWidth <= 560 ? .7 : .78), 820);
+  const ideal = Z.stage.clientWidth * Z.nh / Z.nw;
+  Z.stage.style.height = Math.round(Math.max(220, Math.min(maxH, ideal))) + 'px';
+}
+
+// Calcula el tamaño "que cabe completo" del mapa dentro del visor.
+function ajustar(reset){
+  if (!Z) return;
+  const sw = Z.stage.clientWidth, sh = Z.stage.clientHeight;
+  const base = Math.min(sw / Z.nw, sh / Z.nh);
+  const oldW = Z.w;
+  Z.w = Z.nw * base; Z.h = Z.nh * base;
+  Z.inner.style.width = Z.w + 'px'; Z.inner.style.height = Z.h + 'px';
+  // el máximo permite ver la imagen hasta ~1.5 veces su tamaño real
+  Z.max = Math.max(3, Math.min(10, 1.5 / base));
+  if (reset || !oldW) { Z.s = 1; centrar(false); }
+  else { limitar(); aplicar(false); }
+}
+function centrar(anim){
+  Z.tx = (Z.stage.clientWidth - Z.w * Z.s) / 2;
+  Z.ty = (Z.stage.clientHeight - Z.h * Z.s) / 2;
+  limitar(); aplicar(anim);
+}
+function limitar(){
+  const sw = Z.stage.clientWidth, sh = Z.stage.clientHeight;
+  const cw = Z.w * Z.s, ch = Z.h * Z.s;
+  Z.tx = cw <= sw ? (sw - cw) / 2 : Math.min(0, Math.max(sw - cw, Z.tx));
+  Z.ty = ch <= sh ? (sh - ch) / 2 : Math.min(0, Math.max(sh - ch, Z.ty));
+}
+function aplicar(anim){
+  Z.inner.classList.toggle('anim', !!anim);
+  Z.inner.style.transform = `translate(${Z.tx}px, ${Z.ty}px) scale(${Z.s})`;
+  Z.inner.style.setProperty('--s', Z.s);
+  const zl = document.getElementById('zoomLevel'); if (zl) zl.textContent = Math.round(Z.s * 100) + '%';
+}
+function zoomEn(factor, clientX, clientY, anim){
+  const r = Z.stage.getBoundingClientRect();
+  const px = clientX - r.left, py = clientY - r.top;
+  const ns = Math.max(1, Math.min(Z.max, Z.s * factor));
+  if (ns === Z.s) return;
+  const cx = (px - Z.tx) / Z.s, cy = (py - Z.ty) / Z.s;
+  Z.s = ns; Z.tx = px - cx * ns; Z.ty = py - cy * ns;
+  limitar(); aplicar(anim);
+}
+function volarA(pin){
+  if (!Z || !pin) return;
+  Z.s = Math.max(Z.s, Math.min(2.4, Z.max));
+  Z.tx = Z.stage.clientWidth / 2 - (pin.x / 100) * Z.w * Z.s;
+  Z.ty = Z.stage.clientHeight / 2 - (pin.y / 100) * Z.h * Z.s;
+  limitar(); aplicar(true);
+}
+function pantallaCompleta(){
+  const st = Z.stage;
+  if (document.fullscreenElement) document.exitFullscreen();
+  else if (st.requestFullscreen) st.requestFullscreen();
+  else if (st.webkitRequestFullscreen) st.webkitRequestFullscreen();
+}
+document.addEventListener('fullscreenchange', () => setTimeout(() => ajustar(false), 60));
+let _rz; window.addEventListener('resize', () => { clearTimeout(_rz); _rz = setTimeout(() => { altoSegunMapa(); ajustar(false); }, 120); });
+
+function gestos(stage){
+  const ptrs = new Map();
+  let ultimo = null, movido = false, inicio = null;
+
+  stage.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const f = Math.exp(-e.deltaY * (e.deltaMode === 1 ? 0.05 : 0.0018));
+    zoomEn(f, e.clientX, e.clientY, false);
+  }, { passive:false });
+
+  stage.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.pin, .cbtn')) return;
+    stage.setPointerCapture(e.pointerId);
+    ptrs.set(e.pointerId, { x:e.clientX, y:e.clientY });
+    movido = false; inicio = { x:e.clientX, y:e.clientY };
+    ultimo = null;
+    stage.classList.add('dragging');
+  });
+  stage.addEventListener('pointermove', (e) => {
+    if (!ptrs.has(e.pointerId)) return;
+    const prev = ptrs.get(e.pointerId);
+    ptrs.set(e.pointerId, { x:e.clientX, y:e.clientY });
+    if (Math.hypot(e.clientX - inicio.x, e.clientY - inicio.y) > 4) movido = true;
+
+    if (ptrs.size === 2) {           // pellizco con dos dedos
+      const [a, b] = [...ptrs.values()];
+      const d = Math.hypot(a.x - b.x, a.y - b.y), mx = (a.x + b.x)/2, my = (a.y + b.y)/2;
+      if (ultimo) {
+        Z.tx += mx - ultimo.mx; Z.ty += my - ultimo.my;
+        zoomEn(d / ultimo.d, mx, my, false);
+        limitar(); aplicar(false);
+      }
+      ultimo = { d, mx, my };
+    } else if (ptrs.size === 1) {    // arrastre
+      Z.tx += e.clientX - prev.x; Z.ty += e.clientY - prev.y;
+      limitar(); aplicar(false);
+    }
+  });
+  const soltar = (e) => {
+    if (!ptrs.has(e.pointerId)) return;
+    ptrs.delete(e.pointerId);
+    ultimo = null;
+    if (!ptrs.size) {
+      stage.classList.remove('dragging');
+      if (!movido && MODO_COORDS && e.type === 'pointerup') marcarCoordenada(e);
+    }
+  };
+  stage.addEventListener('pointerup', soltar);
+  stage.addEventListener('pointercancel', soltar);
+  stage.addEventListener('dblclick', (e) => { if (!e.target.closest('.pin, .cbtn')) zoomEn(1.8, e.clientX, e.clientY, true); });
+
+  // teclado: flechas para moverse, +/- para acercar
+  stage.tabIndex = 0;
+  stage.addEventListener('keydown', (e) => {
+    const r = stage.getBoundingClientRect(), cx = r.left + r.width/2, cy = r.top + r.height/2;
+    const paso = 60, k = e.key;
+    if (k === '+' || k === '=') zoomEn(1.3, cx, cy, true);
+    else if (k === '-') zoomEn(1/1.3, cx, cy, true);
+    else if (k.startsWith('Arrow')) {
+      Z.tx += k === 'ArrowLeft' ? paso : k === 'ArrowRight' ? -paso : 0;
+      Z.ty += k === 'ArrowUp' ? paso : k === 'ArrowDown' ? -paso : 0;
+      limitar(); aplicar(true);
+    } else return;
+    e.preventDefault();
+  });
+}
+
+function marcarCoordenada(e){
+  const r = Z.inner.getBoundingClientRect();
+  const x = ((e.clientX - r.left) / r.width * 100), y = ((e.clientY - r.top) / r.height * 100);
+  if (x < 0 || x > 100 || y < 0 || y > 100) return;
+  const xs = x.toFixed(1), ys = y.toFixed(1);
+  let m = Z.inner.querySelector('.coordmark');
+  if (!m) { m = document.createElement('div'); m.className = 'coordmark'; Z.inner.appendChild(m); }
+  m.style.left = xs + '%'; m.style.top = ys + '%';
+  document.getElementById('coordOut').textContent = `x: ${xs} · y: ${ys}`;
+  if (navigator.clipboard) navigator.clipboard.writeText(`x: ${xs}, y: ${ys}`).then(() => toast(`Copiado: x ${xs} · y ${ys}`), () => {});
+}
+
+/* ---------- arranque ---------- */
+cargarSitio().then(data => {
+  state = data;
+  sagas = getSagas();
+  document.getElementById('navName').textContent = state.profile.name;
+  document.getElementById('navNotas').textContent = (state.sections||{}).notasTitle || 'Notas';
+  pintarAvatares(state, ['navAvatar']);
+  leerURL();
+  pintar();
+});
+iniciarChispas();
+</script>
+</body>
+</html>
