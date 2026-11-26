@@ -1,5 +1,33 @@
 {
-  "credo": "Mi viaje aún continua",
+  "profile": {
+    "name": "Christopher Soule",
+    "eyebrow": "Autor de Fantasía",
+    "tagline": "«Soy un escritor de polvo de estrellas; de historias antiguas y olvidadas por el pasar de los siglos.»",
+    "location": "México",
+    "since": "2021",
+    "extra": "Amigo de las piedras",
+    "avatar": "content/uploads/j-r-r-tolkien-mizael-canato.jpg",
+    "banner": "content/uploads/OIG1 (1).jpg"
+  },
+  "bio": [
+    "Soy un fervoroso cristiano, ávido lector, soy alguien que aspira a que mis historias lleguen a ser tan conocidas como las grandes obras de la fantasía contemporánea.",
+    "No aspiro quizás a ser el sucesor de Tolkien, ni mucho menos llegar a la grandeza que varios han llegado antes. Pero quizás, ganarme un lugar en el nicho de la fantasía, poder ser conocido y que mis obras sean amadas como yo las he amado a ellas."
+  ],
+  "stats": {
+    "obras": "02",
+    "listas": "10",
+    "seguidores": "0"
+  },
+  "sections": {
+    "obrasTitle": "Obras publicadas",
+    "obrasSubtitle": "Relatos y crónicas de diversos mundos",
+    "lecturasTitle": "Lecturas actuales",
+    "lecturasSubtitle": "Libros que estoy leyendo.",
+    "lectoresTitle": "Lista de lectores",
+    "lectoresSubtitle": "Algunas de las personas que me siguen",
+    "notasTitle": "Notas",
+    "notasSubtitle": "Apuntes sobre el oficio de escribir y otras cosas."
+  },
   "works": [
     {
       "title": "Los Cantares del Emperador: La Destrucción de la Imparable",
@@ -20,51 +48,6 @@
       "buyLink": "https://www.amazon.com/dp/B0HBV1WRQL"
     }
   ],
-  "blog": [
-    {
-      "date": "2026-08-30",
-      "title": "Nuevo libro en mi colección",
-      "excerpt": "Me ha llegado un nuevo libro estos días, llamado \"El Cerro de las Campanas\". Es una novela histórica sobre una guerra en México, pero espero que me sirva para aprender a narrar algunas cosas más triviales dentro de una saga de novelas que aproximo hacer los próximos meses",
-      "content": "Quizás deba leerlo, para una novela que haré, pero que quizás nunca nadie la lea."
-    },
-    {
-      "date": "2026-09-17",
-      "title": "La publicación de mi siguiente libro va a tomar más de lo esperado",
-      "excerpt": "El siguiente libro, que no se trata de Los Cantares del Emperador III, tomará más tiempo, no por en sí la escritura del mismo, ni su worldbulding, ni siquiera porque tenga un bloqueo de escritor. Sino que he decidido crear otro mundo...",
-      "content": "Estoy escribiendo un siguiente libro, será diferente, ni siquiera lo publicaré bajo a este seudonimo. Se tratará de un ejercicio creativo, seguir adquiriendo experiencia en este oficio del escribir, para que la siguiente novela que escriba, y publique bajo este nombre, sea algo más digno, algo más apropiado. "
-    }
-  ],
-  "bio": [
-    "Soy un fervoroso cristiano, ávido lector, soy alguien que aspira a que mis historias lleguen a ser tan conocidas como las grandes obras de la fantasía contemporánea.",
-    "No aspiro quizás a ser el sucesor de Tolkien, ni mucho menos llegar a la grandeza que varios han llegado antes. Pero quizás, ganarme un lugar en el nicho de la fantasía, poder ser conocido y que mis obras sean amadas como yo las he amado a ellas."
-  ],
-  "profile": {
-    "name": "Christopher Soule",
-    "eyebrow": "Autor de Fantasía",
-    "tagline": "«Soy un escritor de polvo de estrellas; de historias antiguas y olvidadas por el pasar de los siglos.»",
-    "location": "México",
-    "since": "2021",
-    "extra": "Amigo de las piedras",
-    "avatar": "content/uploads/j-r-r-tolkien-mizael-canato.jpg",
-    "banner": "content/uploads/OIG1 (1).jpg"
-  },
-  "sagas": [
-    {
-      "title": "Los Cantares Del Emperador",
-      "desc": "Todos los mapas del Orbam",
-      "maps": [
-        {
-          "title": "Eudapia",
-          "image": "content/uploads/Mapa de Eudapia (para) (1).png",
-          "pins": []
-        },
-        {
-          "title": "Oscepia",
-          "image": "content/uploads/Mapa Oscepia (1).png"
-        }
-      ]
-    }
-  ],
   "reading": [
     {
       "title": "Las Ciegas Hormigas",
@@ -75,12 +58,6 @@
     {
       "title": "The Ennead",
       "author": "Jan Mark",
-      "status": "Leyendo",
-      "cover": ""
-    },
-    {
-      "title": "Describir el Escribir",
-      "author": "Daniel Cassany",
       "status": "Leyendo",
       "cover": ""
     },
@@ -103,9 +80,60 @@
       "cover": ""
     },
     {
-      "title": "La Otra Parte",
-      "author": "Alfred Kubin",
+      "title": "Las Siete Dinastías",
+      "author": "Matteo Strukul",
       "status": "Leyendo"
+    }
+  ],
+  "readers": [],
+  "blog": [
+    {
+      "date": "2026-08-30",
+      "title": "Nuevo libro en mi colección",
+      "excerpt": "Me ha llegado un nuevo libro estos días, llamado \"El Cerro de las Campanas\". Es una novela histórica sobre una guerra en México, pero espero que me sirva para aprender a narrar algunas cosas más triviales dentro de una saga de novelas que aproximo hacer los próximos meses",
+      "content": "Quizás deba leerlo, para una novela que haré, pero que quizás nunca nadie la lea."
+    },
+    {
+      "date": "2026-09-17",
+      "title": "La publicación de mi siguiente libro va a tomar más de lo esperado",
+      "excerpt": "El siguiente libro, que no se trata de Los Cantares del Emperador III, tomará más tiempo, no por en sí la escritura del mismo, ni su worldbulding, ni siquiera porque tenga un bloqueo de escritor. Sino que he decidido crear otro mundo...",
+      "content": "Estoy escribiendo un siguiente libro, será diferente, ni siquiera lo publicaré bajo a este seudonimo. Se tratará de un ejercicio creativo, seguir adquiriendo experiencia en este oficio del escribir, para que la siguiente novela que escriba, y publique bajo este nombre, sea algo más digno, algo más apropiado. "
+    },
+    {
+      "date": "2026-11-25",
+      "title": "Me he comprado un librito nuevo (y otras cosas",
+      "excerpt": "He comprado hoy un libro nuevo (el visto en la imagen), que si bien son cuentos, creo que me vendrá de perlas gracias a que quiero expandir cuanto pueda mi percepción sobre la narrativa para poder hacer hasta los capítulos más insignificantes para mis obras. \nY hablando de eso...",
+      "content": "La obra que comenté sobre la publicación de mi libro ya la terminé, pero comencé otra, para seguir puliendo mi prosa. Será algo tardado, por lo que la publicación de mi siguiente novela bajo mi seudonimo podría tomar hasta por enero del siguiente año. Creo que será la siguiente obra de la nueva saga que estoy haciendo. Igual estaréis viendo actualizaciones conforme la suba. De momento, todo se cocina a fuego lento procurando de que los resultados estén a la altura de lo que este cocinero pretende entregar. ",
+      "image": "/content/uploads/5d93aff7-ae83-4230-b8e6-7ee0dc4cad96.jfif"
+    }
+  ],
+  "credo": "Mi viaje aún continua",
+  "maps": [
+    {
+      "title": "Eudapia",
+      "image": "content/uploads/Mapa de Eudapia (para) (1).png",
+      "pins": []
+    },
+    {
+      "title": "Oscepia",
+      "image": "content/uploads/Mapa Oscepia (1).png"
+    }
+  ],
+  "sagas": [
+    {
+      "title": "Los Cantares Del Emperador",
+      "desc": "Todos los mapas del Orbam",
+      "maps": [
+        {
+          "title": "Eudapia",
+          "image": "content/uploads/Mapa de Eudapia (para) (1).png",
+          "pins": []
+        },
+        {
+          "title": "Oscepia",
+          "image": "content/uploads/Mapa Oscepia (1).png"
+        }
+      ]
     }
   ],
   "progress": [
@@ -119,32 +147,5 @@
       "percent": 7,
       "note": "Worldbulding"
     }
-  ],
-  "sections": {
-    "obrasTitle": "Obras publicadas",
-    "obrasSubtitle": "Relatos y crónicas de diversos mundos",
-    "lecturasTitle": "Lecturas actuales",
-    "lecturasSubtitle": "Libros que estoy leyendo.",
-    "lectoresTitle": "Lista de lectores",
-    "lectoresSubtitle": "Algunas de las personas que me siguen",
-    "notasTitle": "Notas",
-    "notasSubtitle": "Apuntes sobre el oficio de escribir y otras cosas."
-  },
-  "readers": [],
-  "maps": [
-    {
-      "title": "Eudapia",
-      "image": "content/uploads/Mapa de Eudapia (para) (1).png",
-      "pins": []
-    },
-    {
-      "title": "Oscepia",
-      "image": "content/uploads/Mapa Oscepia (1).png"
-    }
-  ],
-  "stats": {
-    "obras": "02",
-    "listas": "10",
-    "seguidores": "0"
-  }
+  ]
 }
