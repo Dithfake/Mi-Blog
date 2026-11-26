@@ -1,0 +1,69 @@
+name: Avisar a suscriptores
+
+# Corre cada vez que guardas el sitio desde /admin (cambia content/site.json):
+#  1) manda por Buttondown un correo por cada nota u obra nueva;
+#  2) publica cada nota nueva en X e Instagram (si configuraste sus secrets).
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/site.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: escribir-en-repo
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: ${{ vars.SITE_URL }}
+      BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+      X_API_KEY: ${{ secrets.X_API_KEY }}
+      X_API_SECRET: ${{ secrets.X_API_SECRET }}
+      X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+      X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+      X_INCLUIR_ENLACE: ${{ vars.X_INCLUIR_ENLACE }}
+      INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+      INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Preparar Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+      - name: Enviar correos nuevos
+        run: node scripts/notify-subscribers.js
+
+      - name: Instalar herramientas para la tarjeta de Instagram
+        if: env.INSTAGRAM_ACCESS_TOKEN != ''
+        run: npm install --no-save --no-package-lock @resvg/resvg-js sharp opentype.js @expo-google-fonts/cinzel @expo-google-fonts/eb-garamond
+
+      - name: Publicar en redes sociales
+        id: redes
+        continue-on-error: true
+        run: node scripts/publicar-redes.js
+
+      - name: Guardar registro de enviados
+        if: always()
+        run: |
+          git add content/.notified.json
+          if ! git diff --staged --quiet; then
+            git commit -m "Registro de avisos enviados"
+            git pull --rebase --autostash
+            git push
+          fi
+
+      - name: Avisar si alguna red falló
+        if: steps.redes.outcome == 'failure'
+        run: |
+          echo "::warning::Alguna red social no se pudo publicar. Revisa el paso 'Publicar en redes sociales'. Se reintentará la próxima vez que guardes."
+          exit 1
