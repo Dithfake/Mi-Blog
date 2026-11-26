@@ -30,7 +30,8 @@ const limpio = v => (v || '').trim();
 const X = {
   key: limpio(process.env.X_API_KEY), secret: limpio(process.env.X_API_SECRET),
   token: limpio(process.env.X_ACCESS_TOKEN), tokenSecret: limpio(process.env.X_ACCESS_SECRET),
-  conEnlace: /^(1|si|sí|true)$/i.test(process.env.X_INCLUIR_ENLACE || '')
+  conEnlace: /^(1|si|sí|true)$/i.test(process.env.X_INCLUIR_ENLACE || ''),
+  maxHilo: Math.max(1, parseInt(process.env.X_MAX_HILO, 10) || 6)   // máximo de publicaciones por nota
 };
 const IG = { token: limpio(process.env.INSTAGRAM_ACCESS_TOKEN) };
 const xActivo = !!(X.key && X.secret && X.token && X.tokenSecret);
@@ -84,26 +85,92 @@ function recortarX(s, max){
   return out.replace(/\s+\S*$/, '').trimEnd() + '…';
 }
 
-function textoParaX(n){
+// Parte el texto completo de la nota en publicaciones de hasta 280 caracteres,
+// cortando de preferencia al final de una frase. Si son varias, se numeran (1/3, 2/3…)
+// y se publican como hilo: cada una responde a la anterior.
+function partesParaX(n){
   const enlace = X.conEnlace ? urlNota(n) : '';
-  const reservado = enlace ? 25 : 0;  // X cuenta todo enlace como 23 + saltos de línea
-  const cuerpo = [n.title, n.excerpt].filter(Boolean).map(t => t.trim()).join('\n\n');
-  return recortarX(cuerpo, 280 - reservado) + (enlace ? '\n\n' + enlace : '');
+  const completo = [n.title, n.excerpt, n.content].filter(t => t && t.trim()).map(t => t.trim()).join('\n\n');
+  if (largoX(completo) + (enlace ? 25 : 0) <= 280) return [completo + (enlace ? '\n\n' + enlace : '')];
+
+  const LIMITE = 280 - 8;                     // espacio para " (10/10)"
+  const partes = [];
+  let resto = completo;
+  while (resto) {
+    if (largoX(resto) <= LIMITE) { partes.push(resto); break; }
+    let corte = '';
+    for (const ch of resto) { if (largoX(corte + ch) > LIMITE) break; corte += ch; }
+    // preferir el final de un párrafo o de una frase; si no, el último espacio
+    const finFrase = Math.max(corte.lastIndexOf('\n'), ...['. ', '! ', '? ', '… ', '; ', ': '].map(m => { const i = corte.lastIndexOf(m); return i >= 0 ? i + 1 : -1; }));
+    const espacio = corte.lastIndexOf(' ');
+    const i = finFrase > corte.length * 0.45 ? finFrase : (espacio > 0 ? espacio : corte.length);
+    partes.push(resto.slice(0, i).trim());
+    resto = resto.slice(i).trim();
+  }
+  let lista = partes.filter(Boolean);
+  if (lista.length > X.maxHilo) {           // límite de publicaciones por nota (cada una cuesta)
+    lista = lista.slice(0, X.maxHilo);
+    lista[lista.length - 1] = recortarX(lista[lista.length - 1] + ' …', LIMITE);
+  }
+  if (enlace) {                              // el enlace va en la última (es la única que cuesta más)
+    const ult = lista[lista.length - 1];
+    lista[lista.length - 1] = largoX(ult) + 25 <= LIMITE ? ult + '\n\n' + enlace : ult;
+    if (lista[lista.length - 1] === ult) lista.push(enlace);
+  }
+  return lista.map((t, k) => lista.length > 1 ? `${t} (${k + 1}/${lista.length})` : t);
 }
 
-async function publicarEnX(n){
-  const url = 'https://api.x.com/2/tweets';
+async function llamarX(url, cuerpo){
   const res = await fetch(url, {
     method: 'POST',
     headers: { Authorization: cabeceraOAuth('POST', url), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text: textoParaX(n) })
+    body: JSON.stringify(cuerpo)
   });
   const data = await res.json().catch(() => ({}));
   if (res.status === 401) throw new Error('X rechazó las llaves (401). Revisa que los 4 secrets X_* sean de la MISMA app y estén completos; si regeneraste la API Key, regenera también el Access Token. Respuesta: ' + JSON.stringify(data));
   if (res.status === 403) throw new Error('X no dio permiso (403). Pon la app en "Read and write" y regenera el Access Token. Respuesta: ' + JSON.stringify(data));
   if (res.status === 402) throw new Error('X pide saldo (402). Carga créditos en tu cuenta de desarrollador. Respuesta: ' + JSON.stringify(data));
   if (!res.ok) throw new Error(`X respondió ${res.status}: ${JSON.stringify(data)}`);
-  return `https://x.com/i/web/status/${data.data && data.data.id}`;
+  return data.data || {};
+}
+
+// Sube la imagen de la nota (si tiene) a X. Si algo falla, la nota se publica sin imagen.
+async function subirImagenX(ruta){
+  if (!ruta) return null;
+  try {
+    const archivo = decodeURIComponent(String(ruta).trim().replace(/^\//, ''));
+    if (!fs.existsSync(archivo)) { console.log(`X: no encontré la imagen ${archivo}; publico sin imagen.`); return null; }
+    const buf = fs.readFileSync(archivo);
+    if (buf.length > 5 * 1024 * 1024) { console.log('X: la imagen pesa más de 5 MB; publico sin imagen.'); return null; }
+    const esGif = buf.slice(0, 3).toString() === 'GIF';
+    const datos = await llamarX('https://api.x.com/2/media/upload', {
+      media: buf.toString('base64'),
+      media_category: esGif ? 'tweet_gif' : 'tweet_image'
+    });
+    return datos.id || null;
+  } catch (e) {
+    console.log(`X: no se pudo subir la imagen (${e.message}); publico sin imagen.`);
+    return null;
+  }
+}
+
+async function publicarEnX(n){
+  const partes = partesParaX(n);
+  const imagen = await subirImagenX(n.image);
+  const primera = await llamarX('https://api.x.com/2/tweets',
+    imagen ? { text: partes[0], media: { media_ids: [imagen] } } : { text: partes[0] });
+  let anterior = primera.id;
+  for (const texto of partes.slice(1)) {
+    try {
+      const r = await llamarX('https://api.x.com/2/tweets', { text: texto, reply: { in_reply_to_tweet_id: anterior } });
+      anterior = r.id;
+    } catch (e) {
+      // la primera ya salió: no la repetimos, solo avisamos
+      console.log(`::warning::X: el hilo quedó incompleto (${e.message})`);
+      break;
+    }
+  }
+  return `https://x.com/i/web/status/${primera.id}` + (partes.length > 1 ? ` (hilo de ${partes.length})` : '') + (imagen ? ' con imagen' : '');
 }
 
 /* =====================================================================
@@ -380,5 +447,5 @@ async function main(){
   if (errores) process.exitCode = 1;   // se reintentará la próxima vez que guardes
 }
 
-module.exports = { conexionInstagram, firmaOAuth, textoParaX, largoX, crearTarjeta, textoParaInstagram, noteSlug };
+module.exports = { conexionInstagram, firmaOAuth, partesParaX, largoX, crearTarjeta, textoParaInstagram, noteSlug };
 if (require.main === module) main().catch(e => { console.error(e); process.exit(1); });
