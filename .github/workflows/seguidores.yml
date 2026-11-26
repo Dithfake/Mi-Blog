@@ -1,0 +1,63 @@
+name: Actualizar seguidores
+
+# Cada 3 horas guarda el número de suscriptores en content/stats.json.
+# También puedes lanzarlo a mano: pestaña Actions > Actualizar seguidores > Run workflow.
+on:
+  schedule:
+    - cron: '17 */3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: escribir-en-repo
+  cancel-in-progress: false
+
+jobs:
+  contador:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Consultar Buttondown
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+        run: node scripts/actualizar-seguidores.js
+      - name: Guardar si cambió
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add content/stats.json
+          if ! git diff --staged --quiet; then
+            git commit -m "Contador de seguidores"
+            git pull --rebase --autostash
+            git push
+          fi
+
+  # Solo para el modo ANTIGUO de Instagram (token que caduca a los 60 días).
+  # Con "Unified login" el token no se renueva así: si el intento falla, se ignora
+  # sin marcar error. Solo corre si configuraste INSTAGRAM_ACCESS_TOKEN y GH_PAT.
+  token-instagram:
+    runs-on: ubuntu-latest
+    env:
+      IG_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_PAT }}
+    steps:
+      - name: Renovar token de Instagram (una vez por semana)
+        run: |
+          if [ -z "$IG_TOKEN" ] || [ -z "$GH_TOKEN" ]; then echo "Renovación no configurada; nada que hacer."; exit 0; fi
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ] && { [ "$(date -u +%u)" != "1" ] || [ "$(date -u +%H)" -ge 3 ]; }; then
+            echo "Hoy no toca renovar."; exit 0
+          fi
+          RESP=$(curl -s "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=$IG_TOKEN")
+          NUEVO=$(echo "$RESP" | jq -r '.access_token // empty')
+          if [ -z "$NUEVO" ]; then
+            echo "::notice::Este token no se renueva por este medio (normal con Unified login). Nada que hacer."
+            exit 0
+          fi
+          echo "::add-mask::$NUEVO"
+          gh secret set INSTAGRAM_ACCESS_TOKEN --repo "$GITHUB_REPOSITORY" --body "$NUEVO"
+          echo "Token de Instagram renovado por 60 días más."
