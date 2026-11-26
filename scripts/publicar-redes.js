@@ -23,6 +23,7 @@ const RAMA = process.env.GITHUB_REF_NAME || 'main';
 const REGISTRO = 'content/.notified.json';
 const MAX_POR_CORRIDA = 3;      // por red, para no publicar en ráfaga
 const DIAS_MAXIMOS = 30;        // notas más viejas que esto no se publican
+const DIAS_PRIMERA_VEZ = 4;     // en la primera ejecución sí se publican las notas de estos últimos días
 
 const X = {
   key: process.env.X_API_KEY, secret: process.env.X_API_SECRET,
@@ -245,6 +246,45 @@ async function urlPublica(rutaRepo){
   throw new Error('La imagen no quedó pública a tiempo: ' + rutaRepo);
 }
 
+/* Meta tiene dos formas de conectar Instagram:
+   · "Unified login" (apps nuevas, desde fines de oct. 2026): token de usuario de sistema,
+     servidor graph.facebook.com. La cuenta se descubre sola (o con INSTAGRAM_ACCOUNT_ID).
+   · "Instagram login" (apps antiguas): token de Instagram, servidor graph.instagram.com.
+   Se prueba primero Unified; si el token no sirve ahí, se intenta el modo antiguo. */
+let _conexionIG = null;
+// Añade el token como parámetro de la dirección (Meta lo acepta así en ambos servidores).
+const conToken = (url) => url + (url.includes('?') ? '&' : '?') + 'access_token=' + encodeURIComponent(IG.token);
+async function conexionInstagram(){
+  if (_conexionIG) return _conexionIG;
+  const auth = { Authorization: `Bearer ${IG.token}` };
+  const errores = [];
+
+  // 1) Unified login (graph.facebook.com)
+  const fb = 'https://graph.facebook.com/v27.0';
+  let id = (process.env.INSTAGRAM_ACCOUNT_ID || '').trim();
+  if (!id) {
+    const r = await fetch(conToken(`${fb}/me/assigned_instagram_accounts?fields=id,username`), { headers: auth }).then(r => r.json()).catch(e => ({ error: e.message }));
+    if (r.data && r.data.length) {
+      id = r.data[0].id;
+      console.log(`Instagram: cuenta detectada @${r.data[0].username || id}`);
+      if (r.data.length > 1) console.log(`Instagram: hay ${r.data.length} cuentas; usando la primera. Para elegir otra, crea el secret INSTAGRAM_ACCOUNT_ID.`);
+    } else errores.push('unified: ' + JSON.stringify(r.error || r));
+  }
+  if (id) {
+    const ok = await fetch(conToken(`${fb}/${id}?fields=id,username`), { headers: auth }).then(r => r.json()).catch(() => ({}));
+    if (ok.id) return (_conexionIG = { api: fb, igId: ok.id });
+    errores.push('unified (cuenta): ' + JSON.stringify(ok.error || ok));
+  }
+
+  // 2) Instagram login (modo antiguo, graph.instagram.com)
+  const ig = 'https://graph.instagram.com/v24.0';
+  const yo = await fetch(conToken(`${ig}/me?fields=user_id,username`), { headers: auth }).then(r => r.json()).catch(e => ({ error: e.message }));
+  if (yo.user_id || yo.id) return (_conexionIG = { api: ig, igId: yo.user_id || yo.id });
+  errores.push('instagram login: ' + JSON.stringify(yo.error || yo));
+
+  throw new Error('El token de Instagram no funciona con ninguno de los dos modos. ' + errores.join(' | '));
+}
+
 async function publicarEnInstagram(n, perfil){
   const rel = `content/social/${noteSlug(n)}.jpg`;
   await crearTarjeta(n, perfil, rel);
@@ -254,26 +294,25 @@ async function publicarEnInstagram(n, perfil){
   execSync('git pull --rebase --autostash && git push', { stdio: 'inherit' });
   const imageUrl = await urlPublica(rel);
 
-  const api = 'https://graph.instagram.com/v24.0';
+  const { api, igId } = await conexionInstagram();
   const auth = { Authorization: `Bearer ${IG.token}` };
-  const yo = await fetch(`${api}/me?fields=user_id,username`, { headers: auth }).then(r => r.json());
-  const igId = yo.user_id || yo.id;
-  if (!igId) throw new Error('El token de Instagram no funciona: ' + JSON.stringify(yo.error || yo));
 
-  const cont = await fetch(`${api}/${igId}/media`, {
+  const crear = (extra) => fetch(conToken(`${api}/${igId}/media`), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${IG.token}` },
-    body: JSON.stringify({ image_url: imageUrl, caption: textoParaInstagram(n), alt_text: `${n.title}. ${n.excerpt || ''}`.slice(0, 1000) })
+    body: JSON.stringify({ image_url: imageUrl, caption: textoParaInstagram(n), ...extra })
   }).then(r => r.json());
+  let cont = await crear({ alt_text: `${n.title}. ${n.excerpt || ''}`.slice(0, 1000) });
+  if (!cont.id) cont = await crear({});   // por si Meta no acepta el texto alternativo
   if (!cont.id) throw new Error('Instagram no creó el contenedor: ' + JSON.stringify(cont.error || cont));
 
   for (let i = 0; i < 12; i++) {          // esperar a que Instagram procese la imagen
-    const st = await fetch(`${api}/${cont.id}?fields=status_code`, { headers: auth }).then(r => r.json());
+    const st = await fetch(conToken(`${api}/${cont.id}?fields=status_code`), { headers: auth }).then(r => r.json());
     if (st.status_code === 'FINISHED') break;
     if (st.status_code === 'ERROR' || st.status_code === 'EXPIRED') throw new Error('Instagram rechazó la imagen: ' + JSON.stringify(st));
     await espera(5000);
   }
-  const pub = await fetch(`${api}/${igId}/media_publish`, {
+  const pub = await fetch(conToken(`${api}/${igId}/media_publish`), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${IG.token}` },
     body: JSON.stringify({ creation_id: cont.id })
@@ -293,12 +332,14 @@ async function main(){
 
   const notas = (site.blog || []).slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
 
-  // Primera vez: anota las notas que ya existen para NO publicarlas de golpe.
+  // Primera vez: anota las notas VIEJAS para no publicarlas de golpe,
+  // pero deja pasar las de los últimos días (por ejemplo, la que acabas de escribir).
   if (!Array.isArray(reg.social)) {
-    reg.social = notas.flatMap(n => ['x:' + noteSlug(n), 'ig:' + noteSlug(n)]);
+    const corte = Date.now() - DIAS_PRIMERA_VEZ * 86400e3;
+    const viejas = notas.filter(n => !(new Date(n.date).getTime() >= corte));
+    reg.social = viejas.flatMap(n => ['x:' + noteSlug(n), 'ig:' + noteSlug(n)]);
     guardar();
-    console.log(`Primera ejecución: registré ${notas.length} notas existentes sin publicarlas.`);
-    return;
+    console.log(`Primera ejecución: registré ${viejas.length} notas antiguas sin publicarlas; ${notas.length - viejas.length} reciente(s) se publicarán.`);
   }
 
   const redes = [
@@ -334,5 +375,5 @@ async function main(){
   if (errores) process.exitCode = 1;   // se reintentará la próxima vez que guardes
 }
 
-module.exports = { firmaOAuth, textoParaX, largoX, crearTarjeta, textoParaInstagram, noteSlug };
+module.exports = { conexionInstagram, firmaOAuth, textoParaX, largoX, crearTarjeta, textoParaInstagram, noteSlug };
 if (require.main === module) main().catch(e => { console.error(e); process.exit(1); });
