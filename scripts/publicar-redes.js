@@ -25,12 +25,14 @@ const MAX_POR_CORRIDA = 3;      // por red, para no publicar en ráfaga
 const DIAS_MAXIMOS = 30;        // notas más viejas que esto no se publican
 const DIAS_PRIMERA_VEZ = 4;     // en la primera ejecución sí se publican las notas de estos últimos días
 
+// .trim() quita espacios o saltos de línea que a veces se cuelan al pegar los secrets.
+const limpio = v => (v || '').trim();
 const X = {
-  key: process.env.X_API_KEY, secret: process.env.X_API_SECRET,
-  token: process.env.X_ACCESS_TOKEN, tokenSecret: process.env.X_ACCESS_SECRET,
+  key: limpio(process.env.X_API_KEY), secret: limpio(process.env.X_API_SECRET),
+  token: limpio(process.env.X_ACCESS_TOKEN), tokenSecret: limpio(process.env.X_ACCESS_SECRET),
   conEnlace: /^(1|si|sí|true)$/i.test(process.env.X_INCLUIR_ENLACE || '')
 };
-const IG = { token: process.env.INSTAGRAM_ACCESS_TOKEN };
+const IG = { token: limpio(process.env.INSTAGRAM_ACCESS_TOKEN) };
 const xActivo = !!(X.key && X.secret && X.token && X.tokenSecret);
 const igActivo = !!IG.token;
 
@@ -97,6 +99,9 @@ async function publicarEnX(n){
     body: JSON.stringify({ text: textoParaX(n) })
   });
   const data = await res.json().catch(() => ({}));
+  if (res.status === 401) throw new Error('X rechazó las llaves (401). Revisa que los 4 secrets X_* sean de la MISMA app y estén completos; si regeneraste la API Key, regenera también el Access Token. Respuesta: ' + JSON.stringify(data));
+  if (res.status === 403) throw new Error('X no dio permiso (403). Pon la app en "Read and write" y regenera el Access Token. Respuesta: ' + JSON.stringify(data));
+  if (res.status === 402) throw new Error('X pide saldo (402). Carga créditos en tu cuenta de desarrollador. Respuesta: ' + JSON.stringify(data));
   if (!res.ok) throw new Error(`X respondió ${res.status}: ${JSON.stringify(data)}`);
   return `https://x.com/i/web/status/${data.data && data.data.id}`;
 }
